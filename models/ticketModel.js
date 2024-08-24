@@ -18,6 +18,13 @@ const ticketSchema = mongoose.Schema(
         "Account & Access Management",
         "Email & Communication",
         "Project & Change Management",
+        "Keyboards & Mice",
+        "Monitors & Displays",
+        "Hard Drive & Storage",
+        "Webcams & Microphones",
+        "USB Hubs & Docking Stations",
+        "Laptop & Chargers",
+        "Other",
       ],
     },
     description: {
