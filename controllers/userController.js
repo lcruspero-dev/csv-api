@@ -43,7 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      token: generateToken(user._id, user.isAdmin),
+      token: generateToken(user._id, user.isAdmin, user.name),
     });
   } else {
     res.status(400);
@@ -66,7 +66,7 @@ const loginUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      token: generateToken(user._id, user.isAdmin),
+      token: generateToken(user._id, user.isAdmin, user.name),
     });
   } else {
     res.status(401);
@@ -88,8 +88,8 @@ const getMe = asyncHandler(async (req, res) => {
 });
 
 // Generate token
-const generateToken = (id, isAdmin) => {
-  return jwt.sign({ id, isAdmin }, process.env.JWT_SECRET, {
+const generateToken = (id, isAdmin, name) => {
+  return jwt.sign({ id, isAdmin, name }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
 };

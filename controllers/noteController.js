@@ -59,6 +59,7 @@ const addNote = asyncHandler(async (req, res) => {
     text: req.body.text,
     isStaff: false,
     user: req.user.id,
+    name: req.user.name,
   });
 
   res.status(200).json(note);
