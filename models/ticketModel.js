@@ -7,6 +7,11 @@ const ticketSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
+    name: {
+      type: String,
+      required: true,
+      ref: "User",
+    },
     category: {
       type: String,
       required: [true, "Please select a Category"],

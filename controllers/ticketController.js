@@ -79,6 +79,7 @@ const createTicket = asyncHandler(async (req, res) => {
     category,
     description,
     user: req.user.id,
+    name: req.user.name,
     status: "new",
     assignedTo: "Empty",
   });
