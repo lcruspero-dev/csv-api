@@ -80,7 +80,7 @@ const createTicket = asyncHandler(async (req, res) => {
     description,
     user: req.user.id,
     name: req.user.name,
-    status: "new",
+    status: "open",
     assignedTo: "Empty",
   });
 
