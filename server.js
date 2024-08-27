@@ -28,6 +28,7 @@ const corsOptions = {
     "http://localhost:4000",
     "http://localhost:3000",
     "http://localhost:5174",
+    "https://ticketing-system-puce.vercel.app",
   ],
   credentials: true,
   optionsSuccessStatus: 200,
