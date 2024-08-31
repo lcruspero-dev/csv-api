@@ -45,6 +45,7 @@ app.use(express.urlencoded({ extended: false }));
 // Routes endpoints
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/tickets", require("./routes/ticketRoutes"));
+app.use("/api/memos", require("./routes/memoRoutes"));
 
 app.use(errorHandler);
 
