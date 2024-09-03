@@ -58,4 +58,13 @@ const deleteMemo = asyncHandler(async (req, res) => {
   res.status(200).json({ id: req.params.id });
 });
 
-module.exports = { getMemos, createMemo, updateMemo, deleteMemo };
+const getMemoById = asyncHandler(async (req, res) => {
+  const memo = await Memo.findById(req.params.id);
+  if (!memo) {
+    res.status(404);
+    throw new Error("Memo not found");
+  }
+  res.status(200).json(memo);
+});
+
+module.exports = { getMemos, createMemo, updateMemo, deleteMemo, getMemoById };

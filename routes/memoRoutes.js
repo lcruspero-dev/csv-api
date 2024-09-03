@@ -5,13 +5,14 @@ const {
   createMemo,
   updateMemo,
   deleteMemo,
+  getMemoById,
 } = require("../controllers/memoController");
 
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
 
 router.get("/", protect, getMemos);
 
-router.get("/:id", protect, getMemos);
+router.get("/:id", protect, getMemoById);
 
 router.post("/create", protect, verifyAdmin, createMemo);
 
