@@ -68,4 +68,48 @@ const getMemoById = asyncHandler(async (req, res) => {
   res.status(200).json(memo);
 });
 
-module.exports = { getMemos, createMemo, updateMemo, deleteMemo, getMemoById };
+const updateAcknowledged = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const name = req.user.name;
+  const { id } = req.params;
+
+  const memo = await Memo.findById(id);
+  if (!memo) {
+    res.status(404);
+    throw new Error("Memo not found");
+  }
+
+  const alreadyAcknowledged = memo.acknowledgedby.some(
+    (acknowledged) => acknowledged.userId === userId
+  );
+
+  if (alreadyAcknowledged) {
+    res.status(400);
+    throw new Error("You already acknowledged this memo");
+  }
+
+  const newAcknowledgment = {
+    name,
+    userId,
+    acknowledgedAt: new Date(),
+  };
+
+  const updatedMemo = await Memo.findByIdAndUpdate(
+    id,
+    {
+      $push: { acknowledgedby: newAcknowledgment },
+    },
+    { new: true }
+  );
+
+  res.status(200).json(updatedMemo);
+});
+
+module.exports = {
+  getMemos,
+  createMemo,
+  updateMemo,
+  deleteMemo,
+  getMemoById,
+  updateAcknowledged,
+};
