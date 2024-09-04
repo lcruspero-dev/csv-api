@@ -3,9 +3,9 @@ const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const Memo = require("../models/memoModel");
 
-const getMemos = asyncHandler(async (req, res) => {
+const getMemos = asyncHandler(async (_req, res) => {
   try {
-    const memos = await Memo.find();
+    const memos = await Memo.find().sort({ createdAt: -1 });
     res.status(200).json(memos);
   } catch (error) {
     console.log(error);
@@ -13,6 +13,7 @@ const getMemos = asyncHandler(async (req, res) => {
     throw new Error("Memos not found");
   }
 });
+
 const createMemo = asyncHandler(async (req, res) => {
   const { subject, description } = req.body;
   if (!subject || !description) {
