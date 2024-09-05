@@ -39,14 +39,14 @@ const ticketSchema = mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ["new", "open", "closed", "ongoing"],
+      enum: ["open", "closed", "In Progress"],
       default: "open",
     },
     assignedTo: {
       type: String,
       required: true,
-      enum: ["Empty", "IT1", "IT2", "IT3", "IT4", "HR1", "HR2", "HR3", "HR4"],
-      default: "Empty",
+      enum: ["Not Assigned", "IT1", "IT2", "IT3", "HR1", "HR2", "HR3"],
+      default: "Not Assigned",
     },
   },
   {
