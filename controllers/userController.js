@@ -34,6 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password: hashedPassword,
     isAdmin: isAdmin || false, // Set isAdmin, default to false if not provided
+    role: "user",
   });
 
   // User is created
@@ -43,6 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      role: user.role,
       token: generateToken(user._id, user.isAdmin, user.name),
     });
   } else {
@@ -66,6 +68,7 @@ const loginUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      role: user.role,
       token: generateToken(user._id, user.isAdmin, user.name),
     });
   } else {
