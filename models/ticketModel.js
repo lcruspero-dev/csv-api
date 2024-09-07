@@ -29,6 +29,8 @@ const ticketSchema = mongoose.Schema(
         "Onboarding Request",
         "Employee Benefits",
         "Leave Request",
+        "Payroll",
+        "Loan Request",
         "Other",
       ],
     },
