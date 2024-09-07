@@ -47,7 +47,15 @@ const ticketSchema = mongoose.Schema(
     assignedTo: {
       type: String,
       required: true,
-      enum: ["Not Assigned", "IT1", "IT2", "IT3", "HR1", "HR2", "HR3"],
+      enum: [
+        "Not Assigned",
+        "IT-Arvin Bautista",
+        "IT-Joriz Cabrera",
+        "IT-John Louie Gastardo",
+        "HR-Cindy Tabudlong",
+        "HR2",
+        "HR3",
+      ],
       default: "Not Assigned",
     },
   },
