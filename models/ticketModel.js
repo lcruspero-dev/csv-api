@@ -64,6 +64,7 @@ const ticketSchema = mongoose.Schema(
       ],
       default: "Not Assigned",
     },
+
     file: {
       type: String,
     },

@@ -60,7 +60,7 @@ const getTicket = asyncHandler(async (req, res) => {
 // @route   POST /api/ticket
 // @access  Private
 const createTicket = asyncHandler(async (req, res) => {
-  const { category, description } = req.body;
+  const { category, description, file } = req.body;
 
   if (!category || !description) {
     res.status(400); // Bad request
@@ -82,6 +82,7 @@ const createTicket = asyncHandler(async (req, res) => {
     name: req.user.name,
     status: "open",
     priority: "3-Moderate",
+    file,
   });
 
   res.status(201).json(ticket);

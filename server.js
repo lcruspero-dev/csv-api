@@ -29,12 +29,12 @@ const corsOptions = {
     "http://localhost:3000",
     "http://localhost:5174",
     "https://ticketing-system-puce.vercel.app",
-    "http://172.16.4.84:3000",
+    "http://172.16.7.98:3000",
   ],
   credentials: true,
   optionsSuccessStatus: 200,
 };
-app.use(cors(corsOptions));
+app.use(cors());
 
 /**
  * This is a built-in middleware function in Express.
