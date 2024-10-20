@@ -15,24 +15,6 @@ const ticketSchema = mongoose.Schema(
     category: {
       type: String,
       required: [true, "Please select a Category"],
-      enum: [
-        "General IT Support",
-        "Hardware Issue",
-        "Software Issue",
-        "Network & Connectivity",
-        "Account & Access Management",
-        "Email & Communication",
-        "Project & Change Management",
-        "Request for Documents",
-        "Request for Meeting",
-        "Certificate of Employment",
-        "Onboarding Request",
-        "Employee Benefits",
-        "Leave Request",
-        "Payroll",
-        "Loan Request",
-        "Other",
-      ],
     },
     description: {
       type: String,
@@ -47,26 +29,22 @@ const ticketSchema = mongoose.Schema(
     priority: {
       type: String,
       required: true,
-      enum: ["3-Moderate", "2-High", "1-Critical"],
+      enum: ["4-Low", "3-Moderate", "2-High", "1-Critical"],
       default: "3-Moderate",
     },
     assignedTo: {
       type: String,
       required: true,
-      enum: [
-        "Not Assigned",
-        "IT-Arvin Bautista",
-        "IT-Joriz Cabrera",
-        "IT-John Louie Gastardo",
-        "HR-Cindy Tabudlong",
-        "HR2",
-        "HR3",
-      ],
       default: "Not Assigned",
     },
 
     file: {
       type: String,
+    },
+    department: {
+      type: String,
+      required: true,
+      enum: ["HR", "IT"],
     },
   },
   {
@@ -74,4 +52,4 @@ const ticketSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Ticket", ticketSchema);
+module.exports = mongoose.model("ticket", ticketSchema);

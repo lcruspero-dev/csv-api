@@ -9,6 +9,9 @@ const {
   viewAllTickets,
   viewOpenTickets,
   viewClosedTickets,
+  viewTicketsByDepartment,
+  viewTicketsByPriority,
+  viewTicketsByCategory,
 } = require("../controllers/ticketController");
 
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
@@ -21,6 +24,11 @@ router.use("/:ticketId/notes", noteRouter);
 router.get("/viewAll", protect, verifyAdmin, viewAllTickets);
 router.get("/viewOpen", protect, verifyAdmin, viewOpenTickets);
 router.get("/viewClosed", protect, verifyAdmin, viewClosedTickets);
+router.get("/category/:category", protect, viewTicketsByCategory);
+
+// Routes for viewing tickets based on department and priority
+router.get("/department/:dept", protect, verifyAdmin, viewTicketsByDepartment);
+router.get("/priority/:level", protect, verifyAdmin, viewTicketsByPriority);
 
 // Protected route to create and get tickets
 router.route("/").get(protect, getTickets).post(protect, createTicket);
