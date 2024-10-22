@@ -51,6 +51,7 @@ app.use("/api/assigns", require("./routes/assignRoutes"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
 
 app.use(errorHandler);
+app.disable("x-powered-by");
 
 /**
  * app.listen()

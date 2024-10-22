@@ -32,10 +32,7 @@ const getTicket = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  const ticket = await Ticket.findById(req.params.id).populate(
-    "user",
-    "name email"
-  );
+  const ticket = await Ticket.findById(req.params.id).populate("user", "id");
 
   if (!ticket) {
     res.status(404);
@@ -43,7 +40,7 @@ const getTicket = asyncHandler(async (req, res) => {
   }
 
   // Check if ticket belongs to user or if user is admin
-  if (ticket.user.toString() !== req.user.id && !req.user.isAdmin) {
+  if (ticket.user._id.toString() !== req.user.id && !req.user.isAdmin) {
     res.status(401);
     throw new Error("Not authorized");
   }
