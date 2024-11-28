@@ -12,55 +12,26 @@ const getEmployeeTimes = async (_req, res) => {
 
 const createEmployeeTimeIn = async (req, res) => {
   try {
-    const timeIn = new Date();
-    const employeeTime = await EmployeeTime.create({
+    const newEmployeeTime = await EmployeeTime.create({
       employeeId: req.user._id,
       employeeName: req.user.name,
-      timeIn,
+      date: req.body.date,
+      timeIn: req.body.timeIn,
     });
-    res.status(201).json(employeeTime);
+    return res.status(201).json(newEmployeeTime);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
-// const createEmployeeTimeOut = async (req, res) => {
-//   try {
-//     const employeeTime = await EmployeeTime.findOne({ employeeId: req.user._id });
-//     if (!employeeTime) {
-//       return res.status(404).json({ message: "Employee time not found" });
-//     }
-//     employeeTime.timeOut = new Date();
-//     await employeeTime.save();
-//     res.status(200).json(employeeTime);
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 const createEmployeeTimeOut = async (req, res) => {
   try {
     const employeeTime = await EmployeeTime.findById(req.params.id);
     if (!employeeTime) {
       return res.status(404).json({ message: "Employee time not found" });
     }
-
-    // Set the timeOut to the current date and time
-    employeeTime.timeOut = new Date();
-
-    // Manually calculate total time rendered in minutes
-    if (employeeTime.timeIn) {
-      const duration = (employeeTime.timeOut - employeeTime.timeIn) / 1000 / 60; // Convert ms to minutes
-      employeeTime.totalTimeRendered = Math.max(duration, 0); // Ensure non-negative value
-    } else {
-      employeeTime.totalTimeRendered = 0; // Default to 0 if timeIn is missing
-    }
-
-    // Save the updated record to the database
+    employeeTime.timeOut = req.body.timeOut;
     await employeeTime.save();
-
-    // Respond with the updated record
     res.status(200).json(employeeTime);
   } catch (error) {
     console.error("Error saving employee time:", error.message);
@@ -99,10 +70,76 @@ const deleteEmployeeTime = async (req, res) => {
   }
 };
 
+const getEmployeeTimeByEmployeeId = async (req, res) => {
+  try {
+    const employeeTime = await EmployeeTime.find({
+      employeeId: req.user._id,
+    }).sort({ createdAt: -1 }); // Sort by createdAt in descending order
+
+    if (!employeeTime || employeeTime.length === 0) {
+      return res.status(404).json({ message: "Employee time not found" });
+    }
+    res.status(200).json(employeeTime);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+const updateEmployeeTimeOut = async (req, res) => {
+  try {
+    // Destructure values from the request body
+    const { timeOut, totalHours, notes } = req.body;
+
+    // Build the update object dynamically based on what is provided in the request body
+    const updateFields = {};
+    if (timeOut) updateFields.timeOut = timeOut;
+    if (totalHours) updateFields.totalHours = totalHours;
+    if (notes) updateFields.notes = notes;
+
+    // Find and update the employee time record
+    const employeeTime = await EmployeeTime.findOneAndUpdate(
+      {
+        employeeId: req.user._id,
+        timeOut: null, // Ensure we only update records where timeOut is null
+      },
+      updateFields,
+      { new: true } // Return the updated document
+    );
+
+    if (!employeeTime) {
+      return res.status(404).json({ message: "Employee time not found" });
+    }
+
+    res.status(200).json(employeeTime);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getEmployeeTimeWithNullTimeOut = async (req, res) => {
+  try {
+    const employeeTime = await EmployeeTime.find({
+      employeeId: req.user._id,
+      timeOut: null,
+    });
+    if (!employeeTime) {
+      return res.status(404).json({ message: "Employee time not found" });
+    }
+    res.status(200).json(employeeTime);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getEmployeeTimes,
   createEmployeeTimeIn,
   updateEmployeeTime,
   deleteEmployeeTime,
   createEmployeeTimeOut,
+  getEmployeeTimeByEmployeeId,
+  updateEmployeeTimeOut,
+  getEmployeeTimeWithNullTimeOut,
 };

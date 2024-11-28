@@ -6,13 +6,21 @@ const {
   createEmployeeTimeOut,
   updateEmployeeTime,
   deleteEmployeeTime,
+  updateEmployeeTimeOut,
+  getEmployeeTimeWithNullTimeOut,
+  getEmployeeTimeByEmployeeId,
 } = require("../controllers/employeeTimeController");
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
 
 router
   .route("/")
   .get(protect, getEmployeeTimes)
-  .post(protect, createEmployeeTimeIn);
+  .post(protect, createEmployeeTimeIn)
+  .put(protect, updateEmployeeTimeOut);
+
+router.route("/null").get(protect, getEmployeeTimeWithNullTimeOut);
+
+router.route("/time").get(protect, getEmployeeTimeByEmployeeId);
 
 router
   .route("/:id")
