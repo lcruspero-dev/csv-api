@@ -49,6 +49,7 @@ app.use("/api/tickets", require("./routes/ticketRoutes"));
 app.use("/api/memos", require("./routes/memoRoutes"));
 app.use("/api/assigns", require("./routes/assignRoutes"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
+app.use("/api/employeeTimes", require("./routes/employeeTimeRoutes"));
 
 app.use(errorHandler);
 app.disable("x-powered-by");
