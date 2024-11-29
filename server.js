@@ -51,6 +51,14 @@ app.use("/api/assigns", require("./routes/assignRoutes"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
 app.use("/api/employeeTimes", require("./routes/employeeTimeRoutes"));
 
+app.get("/api/current-time", (req, res) => {
+  const currentTime = new Date();
+  res.json({
+    date: currentTime.toLocaleDateString(),
+    time: currentTime.toLocaleTimeString(),
+  });
+});
+
 app.use(errorHandler);
 app.disable("x-powered-by");
 
