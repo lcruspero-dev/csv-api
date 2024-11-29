@@ -18,6 +18,8 @@ router
   .post(protect, createEmployeeTimeIn)
   .put(protect, updateEmployeeTimeOut);
 
+router.route("/times").get(protect, getEmployeeTimes);
+
 router.route("/null").get(protect, getEmployeeTimeWithNullTimeOut);
 
 router.route("/time").get(protect, getEmployeeTimeByEmployeeId);
