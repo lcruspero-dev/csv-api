@@ -97,8 +97,72 @@ const generateToken = (id, isAdmin, name) => {
   });
 };
 
+// Reset password using secret key
+const adminResetPassword = asyncHandler(async (req, res) => {
+  const { email, password, confirmPassword, secretKey } = req.body;
+
+  // Validate input fields
+  if (!email || !password || !confirmPassword || !secretKey) {
+    res.status(400);
+    throw new Error("Please provide all required fields");
+  }
+
+  // Check if passwords match
+  if (password !== confirmPassword) {
+    res.status(400);
+    throw new Error("Passwords do not match");
+  }
+
+  // Password validation: Password must be at least 12 characters, and can include letters, numbers, and special characters.
+  const passwordRegex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>]{12,}$/;
+  if (!passwordRegex.test(password)) {
+    res.status(400);
+    throw new Error(
+      "Password must be at least 12 characters, and can include letters, numbers, and special characters."
+    );
+  }
+
+  // Check if email exists
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(400);
+    throw new Error("User not found");
+  }
+
+  // Verify secret key from environment variable
+  if (secretKey !== process.env.RESET_SECRET_KEY) {
+    res.status(400);
+    throw new Error("Invalid secret key");
+  }
+
+  // Check if new password is different from current password
+  const isPasswordSame = await bcrypt.compare(password, user.password);
+  if (isPasswordSame) {
+    res.status(400);
+    throw new Error("New password cannot be the same as the current password");
+  }
+
+  // Hash password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  // Update password
+  user.password = hashedPassword;
+
+  await user.save();
+
+  res.status(200).json({
+    message: "Password reset successfully",
+    userId: user._id,
+    email: user.email,
+    name: user.name,
+  });
+});
+
 module.exports = {
   registerUser,
   loginUser,
   getMe,
+  adminResetPassword,
 };
