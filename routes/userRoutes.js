@@ -5,6 +5,7 @@ const {
   loginUser,
   getMe,
   adminResetPassword,
+  getAllUsersEmails,
 } = require("../controllers/userController");
 
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
@@ -17,5 +18,7 @@ router.post("/admin-reset-password", protect, verifyAdmin, adminResetPassword);
 
 // Protected route (2nd argument) - protect
 router.get("/me", protect, getMe);
+
+router.get("/emails", protect, verifyAdmin, getAllUsersEmails);
 
 module.exports = router;

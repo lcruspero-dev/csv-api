@@ -160,9 +160,16 @@ const adminResetPassword = asyncHandler(async (req, res) => {
   });
 });
 
+//get all users emails
+const getAllUsersEmails = asyncHandler(async (req, res) => {
+  const users = await User.find({}, { email: 1 });
+  res.status(200).json(users);
+});
+
 module.exports = {
   registerUser,
   loginUser,
   getMe,
   adminResetPassword,
+  getAllUsersEmails,
 };
