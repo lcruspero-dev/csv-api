@@ -17,6 +17,7 @@ const createEmployeeTimeIn = async (req, res) => {
       employeeName: req.user.name,
       date: req.body.date,
       timeIn: req.body.timeIn,
+      shift: req.body.shift,
     });
     return res.status(201).json(newEmployeeTime);
   } catch (error) {
@@ -45,9 +46,11 @@ const updateEmployeeTime = async (req, res) => {
     if (!employeeTime) {
       return res.status(404).json({ message: "Employee time not found" });
     }
-    employeeTime.employeeId = req.body.employeeId;
+    employeeTime.date = req.body.date;
     employeeTime.timeIn = req.body.timeIn;
     employeeTime.timeOut = req.body.timeOut;
+    employeeTime.totalHours = req.body.totalHours;
+    employeeTime.notes = req.body.notes;
     const updatedEmployeeTime = await employeeTime.save();
     res.status(200).json(updatedEmployeeTime);
   } catch (error) {
@@ -133,6 +136,43 @@ const getEmployeeTimeWithNullTimeOut = async (req, res) => {
   }
 };
 
+const searchByNameAndDate = async (req, res) => {
+  try {
+    const { name, date } = req.query;
+
+    // Basic validation
+    if (!name || !date) {
+      return res.status(400).json({ message: "Name and date are required" });
+    }
+
+    // Convert the date format from 'YYYY-MM-DD' to 'MM/DD/YYYY'
+    const parsedDate = new Date(date);
+    const formattedDate = `${
+      parsedDate.getMonth() + 1
+    }/${parsedDate.getDate()}/${parsedDate.getFullYear()}`;
+
+    // Create a case-insensitive regex for partial name matching
+    const nameRegex = new RegExp(name, "i");
+
+    const employeeTimes = await EmployeeTime.find({
+      employeeName: { $regex: nameRegex },
+      date: formattedDate,
+    });
+
+    // Handle no records found
+    if (employeeTimes.length === 0) {
+      return res.status(404).json({ message: "No time records found" });
+    }
+
+    res.status(200).json(employeeTimes);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Server error while fetching time records" });
+  }
+};
+
 module.exports = {
   getEmployeeTimes,
   createEmployeeTimeIn,
@@ -142,4 +182,5 @@ module.exports = {
   getEmployeeTimeByEmployeeId,
   updateEmployeeTimeOut,
   getEmployeeTimeWithNullTimeOut,
+  searchByNameAndDate,
 };
