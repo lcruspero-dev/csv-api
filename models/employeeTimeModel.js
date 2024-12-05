@@ -28,6 +28,9 @@ const employeeTimeSchema = mongoose.Schema(
       type: String,
       default: null,
     },
+    shift: {
+      type: String,
+    },
   },
   {
     timestamps: true, // Adds `createdAt` and `updatedAt` fields automatically

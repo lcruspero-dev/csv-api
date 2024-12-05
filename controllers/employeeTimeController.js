@@ -17,6 +17,7 @@ const createEmployeeTimeIn = async (req, res) => {
       employeeName: req.user.name,
       date: req.body.date,
       timeIn: req.body.timeIn,
+      shift: req.body.shift,
     });
     return res.status(201).json(newEmployeeTime);
   } catch (error) {
@@ -45,9 +46,11 @@ const updateEmployeeTime = async (req, res) => {
     if (!employeeTime) {
       return res.status(404).json({ message: "Employee time not found" });
     }
-    employeeTime.employeeId = req.body.employeeId;
+    employeeTime.date = req.body.date;
     employeeTime.timeIn = req.body.timeIn;
     employeeTime.timeOut = req.body.timeOut;
+    employeeTime.totalHours = req.body.totalHours;
+    employeeTime.notes = req.body.notes;
     const updatedEmployeeTime = await employeeTime.save();
     res.status(200).json(updatedEmployeeTime);
   } catch (error) {
