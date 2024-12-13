@@ -173,6 +173,46 @@ const searchByNameAndDate = async (req, res) => {
   }
 };
 
+const updateEmployeeTimeBreak = async (req, res) => {
+  try {
+    // Destructure all possible values from the request body
+    const { breakStart, breakEnd, totalBreakTime } = req.body;
+
+    // Build the update object dynamically based on what is provided
+    const updateFields = {};
+    // if (timeOut) updateFields.timeOut = timeOut;
+    // if (totalHours) updateFields.totalHours = totalHours;
+    // if (notes) updateFields.notes = notes;
+    if (breakStart) updateFields.breakStart = breakStart;
+    if (breakEnd) updateFields.breakEnd = breakEnd;
+    if (totalBreakTime) updateFields.totalBreakTime = totalBreakTime;
+
+    // Find and update the employee time record
+    const employeeTime = await EmployeeTime.findOneAndUpdate(
+      {
+        employeeId: req.user._id,
+        timeOut: null, // Ensure we only update records where timeOut is null
+      },
+      updateFields,
+      { new: true } // Return the updated document
+    );
+
+    if (!employeeTime) {
+      return res.status(404).json({
+        message: "No active time record found for the employee",
+      });
+    }
+
+    res.status(200).json(employeeTime);
+  } catch (error) {
+    console.error("Error updating employee time:", error);
+    res.status(500).json({
+      message: "Failed to update employee time record",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getEmployeeTimes,
   createEmployeeTimeIn,
@@ -183,4 +223,5 @@ module.exports = {
   updateEmployeeTimeOut,
   getEmployeeTimeWithNullTimeOut,
   searchByNameAndDate,
+  updateEmployeeTimeBreak,
 };

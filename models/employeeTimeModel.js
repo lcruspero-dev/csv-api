@@ -24,6 +24,18 @@ const employeeTimeSchema = mongoose.Schema(
       type: String,
       default: null,
     },
+    breakStart: {
+      type: String,
+      default: null,
+    },
+    breakEnd: {
+      type: String,
+      default: null,
+    },
+    TotalBreakTime: {
+      type: String,
+      default: null,
+    },
     notes: {
       type: String,
       default: null,
