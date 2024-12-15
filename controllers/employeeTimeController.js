@@ -1,3 +1,4 @@
+const e = require("express");
 const EmployeeTime = require("../models/employeeTimeModel");
 
 const getEmployeeTimes = async (_req, res) => {
@@ -51,6 +52,12 @@ const updateEmployeeTime = async (req, res) => {
     employeeTime.timeOut = req.body.timeOut;
     employeeTime.totalHours = req.body.totalHours;
     employeeTime.notes = req.body.notes;
+    employeeTime.shift = req.body.shift;
+    employeeTime.breakStart = req.body.breakStart;
+    employeeTime.breakEnd = req.body.breakEnd;
+    employeeTime.totalBreakTime = req.body.totalBreakTime;
+    employeeTime.dateBreakStart = req.body.dateBreakStart;
+    employeeTime.dateBreakEnd = req.body.dateBreakEnd;
     const updatedEmployeeTime = await employeeTime.save();
     res.status(200).json(updatedEmployeeTime);
   } catch (error) {
@@ -176,7 +183,13 @@ const searchByNameAndDate = async (req, res) => {
 const updateEmployeeTimeBreak = async (req, res) => {
   try {
     // Destructure all possible values from the request body
-    const { breakStart, breakEnd, totalBreakTime } = req.body;
+    const {
+      breakStart,
+      breakEnd,
+      totalBreakTime,
+      dateBreakStart,
+      dateBreakEnd,
+    } = req.body;
 
     // Build the update object dynamically based on what is provided
     const updateFields = {};
@@ -186,6 +199,8 @@ const updateEmployeeTimeBreak = async (req, res) => {
     if (breakStart) updateFields.breakStart = breakStart;
     if (breakEnd) updateFields.breakEnd = breakEnd;
     if (totalBreakTime) updateFields.totalBreakTime = totalBreakTime;
+    if (dateBreakStart) updateFields.dateBreakStart = dateBreakStart;
+    if (dateBreakEnd) updateFields.dateBreakEnd = dateBreakEnd;
 
     // Find and update the employee time record
     const employeeTime = await EmployeeTime.findOneAndUpdate(
