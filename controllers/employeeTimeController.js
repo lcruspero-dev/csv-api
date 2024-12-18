@@ -1,3 +1,4 @@
+const e = require("express");
 const EmployeeTime = require("../models/employeeTimeModel");
 
 const getEmployeeTimes = async (_req, res) => {
@@ -51,6 +52,12 @@ const updateEmployeeTime = async (req, res) => {
     employeeTime.timeOut = req.body.timeOut;
     employeeTime.totalHours = req.body.totalHours;
     employeeTime.notes = req.body.notes;
+    employeeTime.shift = req.body.shift;
+    employeeTime.breakStart = req.body.breakStart;
+    employeeTime.breakEnd = req.body.breakEnd;
+    employeeTime.totalBreakTime = req.body.totalBreakTime;
+    employeeTime.dateBreakStart = req.body.dateBreakStart;
+    employeeTime.dateBreakEnd = req.body.dateBreakEnd;
     const updatedEmployeeTime = await employeeTime.save();
     res.status(200).json(updatedEmployeeTime);
   } catch (error) {
@@ -173,6 +180,54 @@ const searchByNameAndDate = async (req, res) => {
   }
 };
 
+const updateEmployeeTimeBreak = async (req, res) => {
+  try {
+    // Destructure all possible values from the request body
+    const {
+      breakStart,
+      breakEnd,
+      totalBreakTime,
+      dateBreakStart,
+      dateBreakEnd,
+    } = req.body;
+
+    // Build the update object dynamically based on what is provided
+    const updateFields = {};
+    // if (timeOut) updateFields.timeOut = timeOut;
+    // if (totalHours) updateFields.totalHours = totalHours;
+    // if (notes) updateFields.notes = notes;
+    if (breakStart) updateFields.breakStart = breakStart;
+    if (breakEnd) updateFields.breakEnd = breakEnd;
+    if (totalBreakTime) updateFields.totalBreakTime = totalBreakTime;
+    if (dateBreakStart) updateFields.dateBreakStart = dateBreakStart;
+    if (dateBreakEnd) updateFields.dateBreakEnd = dateBreakEnd;
+
+    // Find and update the employee time record
+    const employeeTime = await EmployeeTime.findOneAndUpdate(
+      {
+        employeeId: req.user._id,
+        timeOut: null, // Ensure we only update records where timeOut is null
+      },
+      updateFields,
+      { new: true } // Return the updated document
+    );
+
+    if (!employeeTime) {
+      return res.status(404).json({
+        message: "No active time record found for the employee",
+      });
+    }
+
+    res.status(200).json(employeeTime);
+  } catch (error) {
+    console.error("Error updating employee time:", error);
+    res.status(500).json({
+      message: "Failed to update employee time record",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getEmployeeTimes,
   createEmployeeTimeIn,
@@ -183,4 +238,5 @@ module.exports = {
   updateEmployeeTimeOut,
   getEmployeeTimeWithNullTimeOut,
   searchByNameAndDate,
+  updateEmployeeTimeBreak,
 };

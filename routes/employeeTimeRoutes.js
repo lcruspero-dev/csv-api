@@ -10,6 +10,7 @@ const {
   getEmployeeTimeWithNullTimeOut,
   getEmployeeTimeByEmployeeId,
   searchByNameAndDate,
+  updateEmployeeTimeBreak,
 } = require("../controllers/employeeTimeController");
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
 
@@ -18,6 +19,8 @@ router
   .get(protect, getEmployeeTimes)
   .post(protect, createEmployeeTimeIn)
   .put(protect, updateEmployeeTimeOut);
+
+router.route("/break").put(protect, updateEmployeeTimeBreak);
 
 router.route("/times").get(protect, getEmployeeTimes);
 

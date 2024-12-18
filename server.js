@@ -50,6 +50,12 @@ app.use("/api/memos", require("./routes/memoRoutes"));
 app.use("/api/assigns", require("./routes/assignRoutes"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
 app.use("/api/employeeTimes", require("./routes/employeeTimeRoutes"));
+app.use(
+  "/api/employeeAttendances",
+  require("./routes/employeeAttendanceRoutes")
+);
+
+// Serve frontend time
 
 app.get("/api/current-time", (_req, res) => {
   const currentTime = new Date();
