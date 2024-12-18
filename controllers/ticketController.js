@@ -88,7 +88,7 @@ const createTicket = asyncHandler(async (req, res) => {
     category,
     description,
     status: "open",
-    priority: priority || "3-Moderate",
+    priority: priority || "4-Low",
     assignedTo: assignedTo || "Not Assigned",
     file,
     department,
