@@ -30,7 +30,7 @@ const ticketSchema = mongoose.Schema(
       type: String,
       required: true,
       enum: ["4-Low", "3-Moderate", "2-High", "1-Critical"],
-      default: "3-Moderate",
+      default: "4-Low",
     },
     assignedTo: {
       type: String,
