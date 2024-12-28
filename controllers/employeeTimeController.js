@@ -11,8 +11,36 @@ const getEmployeeTimes = async (_req, res) => {
   }
 };
 
+// const createEmployeeTimeIn = async (req, res) => {
+//   try {
+//     const newEmployeeTime = await EmployeeTime.create({
+//       employeeId: req.user._id,
+//       employeeName: req.user.name,
+//       date: req.body.date,
+//       timeIn: req.body.timeIn,
+//       shift: req.body.shift,
+//     });
+//     return res.status(201).json(newEmployeeTime);
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// };
 const createEmployeeTimeIn = async (req, res) => {
   try {
+    // Check for existing record
+    const existingRecord = await EmployeeTime.findOne({
+      employeeId: req.user._id,
+      date: req.body.date,
+      shift: req.body.shift,
+    });
+
+    if (existingRecord) {
+      return res.status(409).json({
+        message: "Duplicate entry: Time-in already recorded for this date.",
+      });
+    }
+
+    // Create new record if no duplicate is found
     const newEmployeeTime = await EmployeeTime.create({
       employeeId: req.user._id,
       employeeName: req.user.name,
@@ -20,12 +48,12 @@ const createEmployeeTimeIn = async (req, res) => {
       timeIn: req.body.timeIn,
       shift: req.body.shift,
     });
+
     return res.status(201).json(newEmployeeTime);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-
 const createEmployeeTimeOut = async (req, res) => {
   try {
     const employeeTime = await EmployeeTime.findById(req.params.id);
