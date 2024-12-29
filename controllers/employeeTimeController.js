@@ -11,20 +11,6 @@ const getEmployeeTimes = async (_req, res) => {
   }
 };
 
-// const createEmployeeTimeIn = async (req, res) => {
-//   try {
-//     const newEmployeeTime = await EmployeeTime.create({
-//       employeeId: req.user._id,
-//       employeeName: req.user.name,
-//       date: req.body.date,
-//       timeIn: req.body.timeIn,
-//       shift: req.body.shift,
-//     });
-//     return res.status(201).json(newEmployeeTime);
-//   } catch (error) {
-//     return res.status(500).json({ message: error.message });
-//   }
-// };
 const createEmployeeTimeIn = async (req, res) => {
   try {
     // Check for existing record
@@ -170,7 +156,6 @@ const getEmployeeTimeWithNullTimeOut = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 const searchByNameAndDate = async (req, res) => {
   try {
     const { name, date } = req.query;
@@ -186,13 +171,16 @@ const searchByNameAndDate = async (req, res) => {
       parsedDate.getMonth() + 1
     }/${parsedDate.getDate()}/${parsedDate.getFullYear()}`;
 
-    // Create a case-insensitive regex for partial name matching
-    const nameRegex = new RegExp(name, "i");
+    let query = { date: formattedDate };
 
-    const employeeTimes = await EmployeeTime.find({
-      employeeName: { $regex: nameRegex },
-      date: formattedDate,
-    });
+    // Only add name filter if not requesting all records
+    if (name.toLowerCase() !== "csv-all") {
+      // Create a case-insensitive regex for partial name matching
+      const nameRegex = new RegExp(name, "i");
+      query.employeeName = { $regex: nameRegex };
+    }
+
+    const employeeTimes = await EmployeeTime.find(query);
 
     // Handle no records found
     if (employeeTimes.length === 0) {
@@ -207,7 +195,6 @@ const searchByNameAndDate = async (req, res) => {
       .json({ message: "Server error while fetching time records" });
   }
 };
-
 const updateEmployeeTimeBreak = async (req, res) => {
   try {
     // Destructure all possible values from the request body
