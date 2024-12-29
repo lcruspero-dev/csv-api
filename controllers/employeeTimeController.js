@@ -173,11 +173,28 @@ const searchByNameAndDate = async (req, res) => {
 
     let query = { date: formattedDate };
 
-    // Only add name filter if not requesting all records
-    if (name.toLowerCase() !== "csv-all") {
-      // Create a case-insensitive regex for partial name matching
-      const nameRegex = new RegExp(name, "i");
-      query.employeeName = { $regex: nameRegex };
+    // Handle special CSV filter cases
+    const nameLower = name.toLowerCase();
+    switch (nameLower) {
+      case "csv-all":
+        // No additional filters needed
+        break;
+      case "csv-shift1":
+        query.shift = "Shift 1";
+        break;
+      case "csv-shift2":
+        query.shift = "Shift 2";
+        break;
+      case "csv-shift3":
+        query.shift = "Shift 3";
+        break;
+      case "csv-staff":
+        query.shift = "Staff";
+        break;
+      default:
+        // Create a case-insensitive regex for partial name matching
+        const nameRegex = new RegExp(name, "i");
+        query.employeeName = { $regex: nameRegex };
     }
 
     const employeeTimes = await EmployeeTime.find(query);
@@ -208,9 +225,6 @@ const updateEmployeeTimeBreak = async (req, res) => {
 
     // Build the update object dynamically based on what is provided
     const updateFields = {};
-    // if (timeOut) updateFields.timeOut = timeOut;
-    // if (totalHours) updateFields.totalHours = totalHours;
-    // if (notes) updateFields.notes = notes;
     if (breakStart) updateFields.breakStart = breakStart;
     if (breakEnd) updateFields.breakEnd = breakEnd;
     if (totalBreakTime) updateFields.totalBreakTime = totalBreakTime;
