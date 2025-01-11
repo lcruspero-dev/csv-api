@@ -37,6 +37,10 @@ const ticketSchema = mongoose.Schema(
       required: true,
       default: "Not Assigned",
     },
+    closingNote: {
+      type: String,
+      default: null,
+    },
 
     file: {
       type: String,
