@@ -8,6 +8,7 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 const createSurvey = asyncHandler(async (req, res) => {
   const { title, description, question, startDate, endDate } = req.body;
 
+  // Validate required fields
   if (!title || !question) {
     return res.status(400).json({
       success: false,
@@ -15,6 +16,17 @@ const createSurvey = asyncHandler(async (req, res) => {
     });
   }
 
+  // Check if a survey with the same title, description, and question already exists
+  const existingSurvey = await Survey.findOne({ title, description, question });
+  if (existingSurvey) {
+    return res.status(400).json({
+      success: false,
+      message:
+        "A survey with the same title, description, and question already exists",
+    });
+  }
+
+  // Create a new survey
   const survey = new Survey({
     title,
     description,
@@ -165,10 +177,10 @@ const submitResponse = asyncHandler(async (req, res) => {
   const { feedback, ratingAnswer, isAnonymous } = req.body;
 
   // Validate feedback and ratingAnswer
-  if (!feedback || !ratingAnswer) {
+  if (!ratingAnswer) {
     return res.status(400).json({
       success: false,
-      message: "feedback and ratingAnswer are required",
+      message: "ratingAnswer are required",
     });
   }
 
@@ -195,15 +207,15 @@ const submitResponse = asyncHandler(async (req, res) => {
     });
   }
 
+  // Check if the user has already responded
   if (
-    !isAnonymous &&
     survey.responses.some(
       (response) => response.respondent?.toString() === req.user._id.toString()
     )
   ) {
     return res.status(400).json({
       success: false,
-      message: "You have already submitted a response",
+      message: "You have already responded to this survey",
     });
   }
 
@@ -212,12 +224,9 @@ const submitResponse = asyncHandler(async (req, res) => {
     ratingAnswer,
     isAnonymous,
     dateAnswer: new Date(),
+    respondent: req.user._id, // Always save the respondent ID
+    username: req.user.name, // Always save the username
   };
-
-  if (!isAnonymous) {
-    response.respondent = req.user._id;
-    response.username = req.user.name;
-  }
 
   survey.responses.push(response);
   await survey.save();
@@ -230,6 +239,7 @@ const submitResponse = asyncHandler(async (req, res) => {
 
 //get all survey with active status
 const getAllActiveSurveys = asyncHandler(async (req, res) => {
+  // Fetch all active surveys
   const surveys = await Survey.find({ status: "active" });
 
   if (surveys.length === 0) {
@@ -239,9 +249,31 @@ const getAllActiveSurveys = asyncHandler(async (req, res) => {
     });
   }
 
+  // Filter surveys to exclude those the user has already responded to
+  const filteredSurveys = surveys.filter(
+    (survey) =>
+      !survey.responses.some(
+        (response) =>
+          response.respondent?.toString() === req.user._id.toString()
+      )
+  );
+
+  if (filteredSurveys.length === 0) {
+    return res.status(200).json({
+      success: false,
+      message: "No active survey that you don't respond to",
+    });
+  }
+
+  // Map surveys to hide the "responses" field
+  const sanitizedSurveys = filteredSurveys.map((survey) => {
+    const { responses, ...rest } = survey.toObject();
+    return rest;
+  });
+
   res.status(200).json({
     success: true,
-    data: surveys,
+    data: sanitizedSurveys,
   });
 });
 
