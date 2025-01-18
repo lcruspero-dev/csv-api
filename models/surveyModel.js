@@ -7,9 +7,9 @@ const surveySchema = new Schema({
     required: true,
     trim: true,
   },
-  description: {
+  question: {
     type: String,
-    trim: true,
+    required: true,
   },
   createdBy: {
     type: Schema.Types.ObjectId,
@@ -20,18 +20,6 @@ const surveySchema = new Schema({
     type: String,
     enum: ["draft", "active", "closed"],
     default: "draft",
-  },
-  startDate: {
-    type: Date,
-    // required: true,
-  },
-  endDate: {
-    type: Date,
-    // required: true,
-  },
-  question: {
-    type: String,
-    required: true,
   },
   allowAnonymous: {
     type: Boolean,

@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 const createSurvey = asyncHandler(async (req, res) => {
-  const { title, description, question, startDate, endDate } = req.body;
+  const { title, question } = req.body;
 
   // Validate required fields
   if (!title || !question) {
@@ -17,22 +17,18 @@ const createSurvey = asyncHandler(async (req, res) => {
   }
 
   // Check if a survey with the same title, description, and question already exists
-  const existingSurvey = await Survey.findOne({ title, description, question });
+  const existingSurvey = await Survey.findOne({ title, question });
   if (existingSurvey) {
     return res.status(400).json({
       success: false,
-      message:
-        "A survey with the same title, description, and question already exists",
+      message: "A survey with the same title, and question already exists",
     });
   }
 
   // Create a new survey
   const survey = new Survey({
     title,
-    description,
     question,
-    startDate,
-    endDate,
     createdBy: req.user._id,
   });
 
@@ -277,6 +273,34 @@ const getAllActiveSurveys = asyncHandler(async (req, res) => {
   });
 });
 
+const getAllSurveyTitles = asyncHandler(async (req, res) => {
+  // Fetch all survey titles without status filter
+  const surveyTitles = await Survey.find(
+    {}, // Empty filter to get all surveys
+    { title: 1, _id: 1, status: 1 } // Fetch title, ID and status fields
+  );
+
+  if (surveyTitles.length === 0) {
+    return res.status(404).json({
+      success: false,
+      message: "No surveys found",
+    });
+  }
+
+  // Format the response data
+  const titles = surveyTitles.map((survey) => ({
+    id: survey._id,
+    title: survey.title,
+    status: survey.status,
+  }));
+
+  res.status(200).json({
+    success: true,
+    count: titles.length,
+    data: titles,
+  });
+});
+
 module.exports = {
   createSurvey,
   getAllSurveys,
@@ -285,4 +309,5 @@ module.exports = {
   deleteSurvey,
   submitResponse,
   getAllActiveSurveys,
+  getAllSurveyTitles,
 };
