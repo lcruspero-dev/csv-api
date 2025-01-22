@@ -107,19 +107,24 @@ const updateSurvey = asyncHandler(async (req, res) => {
     });
   }
 
-  if (survey.createdBy.toString() !== req.user._id.toString()) {
-    return res.status(403).json({
-      success: false,
-      message: "Not authorized to update this survey",
-    });
-  }
+  // const isAdmin = req.user.role === "admin";
+  // const isCreator = survey.createdBy.toString() === req.user._id.toString();
 
-  if (survey.status === "closed") {
-    return res.status(400).json({
-      success: false,
-      message: "Cannot update closed survey",
-    });
-  }
+  // If not admin and not creator, deny access
+  // if (!isAdmin) {
+  //   return res.status(403).json({
+  //     success: false,
+  //     message: "Not authorized to update this survey",
+  //   });
+  // }
+
+  // If regular user (not admin) trying to update a closed survey
+  // if (!isAdmin && survey.status === "closed") {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: "Cannot update closed survey",
+  //   });
+  // }
 
   const updatedSurvey = await Survey.findByIdAndUpdate(
     id,

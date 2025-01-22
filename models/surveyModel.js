@@ -19,7 +19,7 @@ const surveySchema = new Schema({
   status: {
     type: String,
     enum: ["draft", "active", "closed"],
-    default: "draft",
+    default: "active",
   },
   allowAnonymous: {
     type: Boolean,
