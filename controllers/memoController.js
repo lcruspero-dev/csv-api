@@ -1,11 +1,22 @@
 const User = require("../models/userModel");
+const mongoose = require("mongoose");
 
 const asyncHandler = require("express-async-handler");
 const Memo = require("../models/memoModel");
 
 const getMemos = asyncHandler(async (_req, res) => {
   try {
-    const memos = await Memo.find().sort({ createdAt: -1 });
+    const user = await User.findById(_req.user._id);
+
+    let memos;
+    if (user.isAdmin) {
+      memos = await Memo.find().sort({ createdAt: -1 });
+    } else {
+      memos = await Memo.find({
+        createdAt: { $gte: user.createdAt },
+      }).sort({ createdAt: -1 });
+    }
+
     res.status(200).json(memos);
   } catch (error) {
     console.log(error);
@@ -105,6 +116,41 @@ const updateAcknowledged = asyncHandler(async (req, res) => {
   res.status(200).json(updatedMemo);
 });
 
+const getUserUnacknowledged = asyncHandler(async (req, res) => {
+  try {
+    const { memoId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(memoId)) {
+      return res.status(400).json({ message: "Invalid memo ID" });
+    }
+
+    const memo = await Memo.findById(memoId);
+    if (!memo) {
+      return res.status(404).json({ message: "Memo not found" });
+    }
+
+    const acknowledgedUserIds = memo.acknowledgedby.map((ack) => ack.userId);
+    const unacknowledgedUsers = await User.find(
+      {
+        _id: { $nin: acknowledgedUserIds },
+        status: { $ne: "inactive" },
+        createdAt: { $lte: memo.createdAt },
+      },
+      "name _id"
+    );
+
+    return res.status(200).json({
+      memoId,
+      unacknowledgedUsers: unacknowledgedUsers.map((user) => ({
+        userId: user._id,
+        name: user.name,
+      })),
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = {
   getMemos,
   createMemo,
@@ -112,4 +158,5 @@ module.exports = {
   deleteMemo,
   getMemoById,
   updateAcknowledged,
+  getUserUnacknowledged,
 };

@@ -7,6 +7,7 @@ const {
   deleteMemo,
   getMemoById,
   updateAcknowledged,
+  getUserUnacknowledged,
 } = require("../controllers/memoController");
 
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
@@ -22,5 +23,12 @@ router.put("/:id", protect, verifyAdmin, updateMemo);
 router.delete("/:id", protect, verifyAdmin, deleteMemo);
 
 router.put("/:id/acknowledged", protect, updateAcknowledged);
+
+router.get(
+  "/unacknowledged/:memoId",
+  protect,
+  verifyAdmin,
+  getUserUnacknowledged
+);
 
 module.exports = router;
