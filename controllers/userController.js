@@ -69,6 +69,7 @@ const loginUser = asyncHandler(async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
       role: user.role,
+      status: user.status,
       token: generateToken(user._id, user.isAdmin, user.name),
     });
   } else {
@@ -166,10 +167,43 @@ const getAllUsersEmails = asyncHandler(async (req, res) => {
   res.status(200).json(users);
 });
 
+const searchUsers = asyncHandler(async (req, res) => {
+  const { query } = req.query;
+  const users = await User.find(
+    { name: { $regex: `.*${query}.*`, $options: "i" } },
+    { password: 0 } // Excludes password field
+  );
+  res.status(200).json(users);
+});
+
+const setUserToInactive = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const user = await User.findById(userId);
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  await User.findByIdAndUpdate(userId, { status: "inactive" });
+  res.status(200).json({ message: "User set to inactive" });
+});
+const setUserToActive = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const user = await User.findById(userId);
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  await User.findByIdAndUpdate(userId, { status: "active" });
+  res.status(200).json({ message: "User set to active" });
+});
+
 module.exports = {
   registerUser,
   loginUser,
   getMe,
   adminResetPassword,
   getAllUsersEmails,
+  searchUsers,
+  setUserToInactive,
+  setUserToActive,
 };

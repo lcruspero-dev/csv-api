@@ -6,6 +6,9 @@ const {
   getMe,
   adminResetPassword,
   getAllUsersEmails,
+  searchUsers,
+  setUserToInactive,
+  setUserToActive,
 } = require("../controllers/userController");
 
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
@@ -20,5 +23,11 @@ router.post("/admin-reset-password", protect, verifyAdmin, adminResetPassword);
 router.get("/me", protect, getMe);
 
 router.get("/emails", protect, verifyAdmin, getAllUsersEmails);
+
+router.get("/search", protect, verifyAdmin, searchUsers);
+
+router.put("/inactive/:userId", protect, verifyAdmin, setUserToInactive);
+
+router.put("/active/:userId", protect, verifyAdmin, setUserToActive);
 
 module.exports = router;
