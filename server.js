@@ -55,6 +55,7 @@ app.use(
   require("./routes/employeeAttendanceRoutes")
 );
 app.use("/api/surveys", require("./routes/surveyRoutes"));
+app.use("/api/ntes", require("./routes/nteRoutes"));
 
 // Serve frontend time
 
