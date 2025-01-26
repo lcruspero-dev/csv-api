@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 const nteSchema = new Schema({
   nte: {
     employeeId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "user", // Reference to the User model
+      type: String,
+      required: true,
     },
     name: {
       type: String,

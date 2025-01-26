@@ -1,6 +1,5 @@
 const asyncHandler = require("express-async-handler");
 const Nte = require("../models/nteModel");
-const User = require("../models/userModel");
 const mongoose = require("mongoose");
 
 // Authorization middleware
@@ -36,11 +35,12 @@ const getNte = asyncHandler(async (req, res) => {
     throw new Error("Invalid NTE ID");
   }
 
-  const nte = await Nte.findById(id).populate("nte.employeeId", "name email");
+  const nte = await Nte.findById(id);
   if (!nte) {
     res.status(404);
     throw new Error("NTE not found");
   }
+
   res.status(200).json(nte);
 });
 
@@ -48,13 +48,11 @@ const getNte = asyncHandler(async (req, res) => {
 const createNte = asyncHandler(async (req, res) => {
   const { nte } = req.body;
 
-  // Check if user has permission to create NTE
   if (!canUpdateNte(req.user)) {
     res.status(403);
     throw new Error("Not authorized to create NTE");
   }
 
-  // Validate required fields
   if (
     !nte ||
     !nte.employeeId ||
@@ -69,23 +67,23 @@ const createNte = asyncHandler(async (req, res) => {
     throw new Error("Please provide all required NTE fields");
   }
 
-  // Create the new NTE document
-  const newNte = await Nte.create({
-    nte: {
-      employeeId: nte.employeeId,
-      name: nte.name,
-      position: nte.position,
-      dateIssued: nte.dateIssued,
-      issuedBy: nte.issuedBy,
-      offenseType: nte.offenseType,
-      offenseDescription: nte.offenseDescription,
-    },
+  const existingNte = await Nte.findOne({
+    "nte.employeeId": nte.employeeId,
+    "nte.dateIssued": nte.dateIssued,
+    "nte.offenseType": nte.offenseType,
+    "nte.offenseDescription": nte.offenseDescription,
   });
 
-  // Populate the `employeeId` field
-  // const populatedNte = await Nte.findById(newNte._id).populate(
-  //   "nte.employeeId"
-  // );
+  if (existingNte) {
+    res.status(409);
+    throw new Error("An NTE with the same details already exists");
+  }
+
+  const newNte = await Nte.create({
+    nte: {
+      ...nte,
+    },
+  });
 
   res.status(201).json(newNte);
 });
