@@ -168,11 +168,28 @@ const getAllUsersEmails = asyncHandler(async (req, res) => {
 });
 
 const searchUsers = asyncHandler(async (req, res) => {
+  // Get user information from the authenticated request
+  const requestingUser = req.user; // Assuming you have user data in req.user from auth middleware
+
+  // Check if user exists and has required permissions
+  if (!requestingUser) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+
+  // Check if user is either admin or has required role
+  if (!requestingUser.isAdmin && !["TL", "TM"].includes(requestingUser.role)) {
+    return res.status(403).json({
+      message: "Access denied. Requires admin privileges or TL/TM role",
+    });
+  }
+
   const { query } = req.query;
+
   const users = await User.find(
     { name: { $regex: `.*${query}.*`, $options: "i" } },
     { password: 0 } // Excludes password field
   );
+
   res.status(200).json(users);
 });
 

@@ -24,7 +24,7 @@ router.get("/me", protect, getMe);
 
 router.get("/emails", protect, verifyAdmin, getAllUsersEmails);
 
-router.get("/search", protect, verifyAdmin, searchUsers);
+router.get("/search", protect, searchUsers);
 
 router.put("/inactive/:userId", protect, verifyAdmin, setUserToInactive);
 

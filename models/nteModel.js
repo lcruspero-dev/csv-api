@@ -99,6 +99,9 @@ const nteSchema = new Schema({
     type: String,
     enum: ["DRAFT", "PER", "PNOD", "PNODA", "FTHR"],
   },
+  createdBy: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

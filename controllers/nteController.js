@@ -46,6 +46,7 @@ const getNte = asyncHandler(async (req, res) => {
 
 // Create NTE - Only admin/TL/TM
 const createNte = asyncHandler(async (req, res) => {
+  const createdBy = req.user.name;
   const { nte, status } = req.body;
 
   // Check authorization
@@ -97,6 +98,7 @@ const createNte = asyncHandler(async (req, res) => {
       file: nte.file || null, // Make file field optional
     },
     status,
+    createdBy,
   });
 
   res.status(201).json(newNte);
