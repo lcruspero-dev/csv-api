@@ -32,6 +32,9 @@ const nteSchema = new Schema({
       type: String,
       required: true,
     },
+    file: {
+      type: String,
+    },
     employeeSignatureDate: {
       type: Date,
     },
@@ -91,6 +94,10 @@ const nteSchema = new Schema({
     authorizedSignatureDate: {
       type: Date,
     },
+  },
+  status: {
+    type: String,
+    enum: ["DRAFT", "PER", "PNOD", "PNODA", "FTHR"],
   },
   createdAt: {
     type: Date,

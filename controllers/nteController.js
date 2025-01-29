@@ -46,13 +46,15 @@ const getNte = asyncHandler(async (req, res) => {
 
 // Create NTE - Only admin/TL/TM
 const createNte = asyncHandler(async (req, res) => {
-  const { nte } = req.body;
+  const { nte, status } = req.body;
 
+  // Check authorization
   if (!canUpdateNte(req.user)) {
     res.status(403);
     throw new Error("Not authorized to create NTE");
   }
 
+  // Validate required fields
   if (
     !nte ||
     !nte.employeeId ||
@@ -61,12 +63,21 @@ const createNte = asyncHandler(async (req, res) => {
     !nte.dateIssued ||
     !nte.issuedBy ||
     !nte.offenseType ||
-    !nte.offenseDescription
+    !nte.offenseDescription ||
+    !status
   ) {
     res.status(400);
     throw new Error("Please provide all required NTE fields");
   }
 
+  // Validate status
+  const validStatuses = ["DRAFT", "PER", "PNOD", "PNODA", "FTHR"];
+  if (!validStatuses.includes(status)) {
+    res.status(400);
+    throw new Error("Invalid status value");
+  }
+
+  // Check for existing NTE
   const existingNte = await Nte.findOne({
     "nte.employeeId": nte.employeeId,
     "nte.dateIssued": nte.dateIssued,
@@ -79,10 +90,13 @@ const createNte = asyncHandler(async (req, res) => {
     throw new Error("An NTE with the same details already exists");
   }
 
+  // Create new NTE with status
   const newNte = await Nte.create({
     nte: {
       ...nte,
+      file: nte.file || null, // Make file field optional
     },
+    status,
   });
 
   res.status(201).json(newNte);
