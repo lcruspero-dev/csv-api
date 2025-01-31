@@ -107,7 +107,7 @@ const createNte = asyncHandler(async (req, res) => {
 // Update NTE sections
 const updateNte = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { nte, employeeFeedback, noticeOfDecision } = req.body;
+  const { nte, employeeFeedback, noticeOfDecision, status } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(400);
@@ -141,11 +141,14 @@ const updateNte = asyncHandler(async (req, res) => {
     if (noticeOfDecision) updateData.noticeOfDecision = noticeOfDecision;
   }
 
-  const updatedNte = await Nte.findByIdAndUpdate(
-    id,
-    { $set: updateData },
-    { new: true, runValidators: true }
-  );
+  // Allow status update
+  if (status) {
+    updateData.status = status;
+  }
+
+  // Update `updatedAt` automatically via timestamps option
+  existingNte.set(updateData);
+  const updatedNte = await existingNte.save(); // Ensures __v is incremented
 
   res.status(200).json(updatedNte);
 });
@@ -174,10 +177,18 @@ const deleteNte = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "NTE deleted successfully" });
 });
 
+//get nte by status query param
+const getNtesByStatus = asyncHandler(async (req, res) => {
+  const status = req.params.status;
+  const ntes = await Nte.find({ status });
+  res.status(200).json(ntes);
+});
+
 module.exports = {
   getNtes,
   getNte,
   createNte,
   updateNte,
   deleteNte,
+  getNtesByStatus,
 };

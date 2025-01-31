@@ -19,4 +19,12 @@ router.get("/:id", protect, nteController.getNte);
 router.put("/:id", protect, nteController.updateNte);
 router.delete("/:id", protect, verifyTeamRole, nteController.deleteNte);
 
+// Get NTEs by status query param - restricted to TL/TM/Admin
+router.get(
+  "/status/:status",
+  protect,
+  verifyTeamRole,
+  nteController.getNtesByStatus
+);
+
 module.exports = router;
