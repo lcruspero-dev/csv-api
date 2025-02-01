@@ -11,7 +11,7 @@ const verifyTeamRole = (req, res, next) => {
     throw new Error("Not authorized");
   }
 };
-
+router.get("/my/nte", protect, nteController.getNtesByUser);
 // Basic CRUD routes - restricted to TL/TM/Admin
 router.post("/", protect, verifyTeamRole, nteController.createNte);
 router.get("/", protect, verifyTeamRole, nteController.getNtes);

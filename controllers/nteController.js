@@ -184,6 +184,22 @@ const getNtesByStatus = asyncHandler(async (req, res) => {
   res.status(200).json(ntes);
 });
 
+const getNtesByUser = asyncHandler(async (req, res) => {
+  const userId = req.user?._id?.toString();
+
+  if (!userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
+
+  // Update the query to match employeeId inside the nte object
+  const ntes = await Nte.find({
+    "nte.employeeId": userId,
+    status: { $ne: "DRAFT" },
+  }).lean();
+
+  res.status(200).json(ntes);
+});
+
 module.exports = {
   getNtes,
   getNte,
@@ -191,4 +207,5 @@ module.exports = {
   updateNte,
   deleteNte,
   getNtesByStatus,
+  getNtesByUser,
 };
