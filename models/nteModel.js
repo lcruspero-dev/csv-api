@@ -62,7 +62,6 @@ const nteSchema = new Schema({
   noticeOfDecision: {
     name: {
       type: String,
-      trim: true,
     },
     position: {
       type: String,
@@ -73,13 +72,10 @@ const nteSchema = new Schema({
     writtenExplanationReceiptDate: {
       type: String,
     },
-    nteDate: {
+    offenseType: {
       type: String,
     },
-    receivedDate: {
-      type: String,
-    },
-    cocdViolated: {
+    offenseDescription: {
       type: String,
     },
     findings: {
