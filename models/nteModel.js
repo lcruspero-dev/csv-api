@@ -36,10 +36,12 @@ const nteSchema = new Schema({
       type: String,
     },
     employeeSignatureDate: {
-      type: Date,
+      type: String,
+      default: null,
     },
     authorizedSignatureDate: {
-      type: Date,
+      type: String,
+      default: null,
     },
   },
   employeeFeedback: {
@@ -56,7 +58,7 @@ const nteSchema = new Schema({
       type: String,
     },
     employeeSignatureDate: {
-      type: Date,
+      type: String,
     },
   },
   noticeOfDecision: {
@@ -85,10 +87,10 @@ const nteSchema = new Schema({
       type: String,
     },
     employeeSignatureDate: {
-      type: Date,
+      type: String,
     },
     authorizedSignatureDate: {
-      type: Date,
+      type: String,
     },
   },
   status: {

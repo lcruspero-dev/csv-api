@@ -124,22 +124,12 @@ const updateNte = asyncHandler(async (req, res) => {
 
   // Handle NTE section update
   if (nte) {
-    if (!canUpdateNte(req.user)) {
-      res.status(403);
-      throw new Error("Not authorized to update NTE section");
-    }
     updateData.nte = { ...existingNte.nte, ...nte };
   }
 
   // Handle Employee Feedback and Notice of Decision updates
-  if (employeeFeedback || noticeOfDecision) {
-    if (!canUpdateFeedbackAndDecision(req.user, existingNte)) {
-      res.status(403);
-      throw new Error("Not authorized to update feedback or decision");
-    }
-    if (employeeFeedback) updateData.employeeFeedback = employeeFeedback;
-    if (noticeOfDecision) updateData.noticeOfDecision = noticeOfDecision;
-  }
+  if (employeeFeedback) updateData.employeeFeedback = employeeFeedback;
+  if (noticeOfDecision) updateData.noticeOfDecision = noticeOfDecision;
 
   // Allow status update
   if (status) {
