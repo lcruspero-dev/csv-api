@@ -57,21 +57,44 @@ const createEmployeeTimeOut = async (req, res) => {
 
 const updateEmployeeTime = async (req, res) => {
   try {
+    const {
+      secretKey,
+      date,
+      timeIn,
+      timeOut,
+      totalHours,
+      notes,
+      shift,
+      breakStart,
+      breakEnd,
+      totalBreakTime,
+      dateBreakStart,
+      dateBreakEnd,
+    } = req.body;
+
+    // Validate secret key from environment variable
+    if (secretKey !== process.env.UPDATE_SECRET_KEY) {
+      return res.status(400).json({ message: "Invalid secret key" });
+    }
+
     const employeeTime = await EmployeeTime.findById(req.params.id);
     if (!employeeTime) {
       return res.status(404).json({ message: "Employee time not found" });
     }
-    employeeTime.date = req.body.date;
-    employeeTime.timeIn = req.body.timeIn;
-    employeeTime.timeOut = req.body.timeOut;
-    employeeTime.totalHours = req.body.totalHours;
-    employeeTime.notes = req.body.notes;
-    employeeTime.shift = req.body.shift;
-    employeeTime.breakStart = req.body.breakStart;
-    employeeTime.breakEnd = req.body.breakEnd;
-    employeeTime.totalBreakTime = req.body.totalBreakTime;
-    employeeTime.dateBreakStart = req.body.dateBreakStart;
-    employeeTime.dateBreakEnd = req.body.dateBreakEnd;
+
+    // Update employee time fields
+    employeeTime.date = date;
+    employeeTime.timeIn = timeIn;
+    employeeTime.timeOut = timeOut;
+    employeeTime.totalHours = totalHours;
+    employeeTime.notes = notes;
+    employeeTime.shift = shift;
+    employeeTime.breakStart = breakStart;
+    employeeTime.breakEnd = breakEnd;
+    employeeTime.totalBreakTime = totalBreakTime;
+    employeeTime.dateBreakStart = dateBreakStart;
+    employeeTime.dateBreakEnd = dateBreakEnd;
+
     const updatedEmployeeTime = await employeeTime.save();
     res.status(200).json(updatedEmployeeTime);
   } catch (error) {
