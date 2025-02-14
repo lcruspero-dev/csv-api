@@ -185,7 +185,9 @@ const getNtesByUser = asyncHandler(async (req, res) => {
   const ntes = await Nte.find({
     "nte.employeeId": userId,
     status: { $ne: "DRAFT" },
-  }).lean();
+  })
+    .sort({ createdAt: -1 })
+    .lean();
 
   res.status(200).json(ntes);
 });
