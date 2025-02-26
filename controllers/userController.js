@@ -185,10 +185,15 @@ const searchUsers = asyncHandler(async (req, res) => {
 
   const { query } = req.query;
 
-  const users = await User.find(
-    { name: { $regex: `.*${query}.*`, $options: "i" } },
-    { password: 0 } // Excludes password field
-  );
+  let users;
+  if (query === "csv-all") {
+    users = await User.find({}, { password: 0 }); // Return all users, excluding password field
+  } else {
+    users = await User.find(
+      { name: { $regex: `.*${query}.*`, $options: "i" } },
+      { password: 0 } // Excludes password field
+    );
+  }
 
   res.status(200).json(users);
 });
