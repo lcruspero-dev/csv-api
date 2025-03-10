@@ -219,6 +219,25 @@ const setUserToActive = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "User set to active" });
 });
 
+const changePassword = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { currentPassword, newPassword } = req.body;
+  const user = await User.findById(userId);
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  const isPasswordSame = await bcrypt.compare(currentPassword, user.password);
+  if (!isPasswordSame) {
+    res.status(400);
+    throw new Error("Old password is incorrect");
+  }
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
+  await User.findByIdAndUpdate(userId, { password: hashedPassword });
+  res.status(200).json({ message: "Password changed successfully" });
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -228,4 +247,5 @@ module.exports = {
   searchUsers,
   setUserToInactive,
   setUserToActive,
+  changePassword,
 };

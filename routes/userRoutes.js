@@ -9,6 +9,7 @@ const {
   searchUsers,
   setUserToInactive,
   setUserToActive,
+  changePassword,
 } = require("../controllers/userController");
 
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
@@ -29,5 +30,7 @@ router.get("/search", protect, searchUsers);
 router.put("/inactive/:userId", protect, verifyAdmin, setUserToInactive);
 
 router.put("/active/:userId", protect, verifyAdmin, setUserToActive);
+
+router.put("/change-password", protect, changePassword);
 
 module.exports = router;
