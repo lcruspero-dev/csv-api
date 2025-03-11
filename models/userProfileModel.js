@@ -40,9 +40,9 @@ const userProfileSchema = mongoose.Schema(
     dateOfBirth: {
       type: String,
     },
-    age: {
-      type: String,
-    },
+    // age: {
+    //   type: String,
+    // },
     emergencyContactPerson: {
       type: String,
     },
