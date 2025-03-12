@@ -73,9 +73,24 @@ const deleteUserProfile = async (req, res) => {
   }
 };
 
+const getUserProfileById = async (req, res) => {
+  try {
+    const userProfile = await UserProfile.findOne({ userId: req.params.id }); // Query by userId instead of _id
+
+    if (!userProfile) {
+      return res.status(404).json({ message: "User profile not found" });
+    }
+
+    res.status(200).json(userProfile);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user profile", error });
+  }
+};
+
 module.exports = {
   createUserProfile,
   getUserProfile,
   updateUserProfile,
   deleteUserProfile,
+  getUserProfileById,
 };
