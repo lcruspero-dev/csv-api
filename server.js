@@ -51,8 +51,8 @@ app.use("/api/assigns", require("./routes/assignRoutes"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
 app.use("/api/employeeTimes", require("./routes/employeeTimeRoutes"));
 app.use(
-  "/api/employeeAttendances",
-  require("./routes/employeeAttendanceRoutes")
+  "/api/ScheduleAndAttendanceRoutes",
+  require("./routes/ScheduleAndAttendanceRoutes")
 );
 app.use("/api/surveys", require("./routes/surveyRoutes"));
 app.use("/api/ntes", require("./routes/nteRoutes"));
