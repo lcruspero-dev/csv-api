@@ -9,14 +9,26 @@ const scheduleEntrySchema = new mongoose.Schema({
   employeeName: {
     type: String,
   },
-  date: {
+  schedule: [
+    {
+      date: {
+        type: String, // You can also use Date type if needed
+      },
+      shiftType: {
+        type: String,
+      },
+      startTime: {
+        type: String,
+      },
+      endTime: {
+        type: String,
+      },
+    },
+  ],
+  teamLeader: {
     type: String,
   },
-  shiftType: {
-    type: String,
-    enum: ["morning", "afternoon", "night", "off"],
-  },
-  department: {
+  position: {
     type: String,
   },
 });
@@ -43,10 +55,20 @@ const attendanceEntrySchema = new mongoose.Schema({
   },
 });
 
+const teamLeaderEntrySchema = new mongoose.Schema({
+  teamLeader: {
+    type: String,
+  },
+});
+
 const ScheduleEntry = mongoose.model("ScheduleEntry", scheduleEntrySchema);
 const AttendanceEntry = mongoose.model(
   "AttendanceEntry",
   attendanceEntrySchema
 );
+const TeamLeaderEntry = mongoose.model(
+  "TeamLeaderEntry",
+  teamLeaderEntrySchema
+);
 
-module.exports = { ScheduleEntry, AttendanceEntry };
+module.exports = { ScheduleEntry, AttendanceEntry, TeamLeaderEntry };

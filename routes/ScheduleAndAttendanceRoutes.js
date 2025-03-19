@@ -37,4 +37,21 @@ router.put(
   scheduleAndAttendanceController.updateAttendanceEntry
 );
 
+router.get(
+  "/team-leader-entries",
+  protect,
+  scheduleAndAttendanceController.getAllTeamLeaderEntries
+);
+
+router.post(
+  "/team-leader-entries",
+  protect,
+  scheduleAndAttendanceController.createTeamLeaderEntry
+);
+
+router.post(
+  "/check-existing-entry",
+  protect,
+  scheduleAndAttendanceController.checkExistingEntry
+);
 module.exports = router;
