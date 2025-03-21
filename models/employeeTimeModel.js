@@ -52,7 +52,7 @@ const employeeTimeSchema = mongoose.Schema(
       type: String,
       default: null,
     },
-    SecondBreakEnd: {
+    secondBreakEnd: {
       type: String,
       default: null,
     },
