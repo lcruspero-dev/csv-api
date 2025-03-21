@@ -32,6 +32,14 @@ const employeeTimeSchema = mongoose.Schema(
       type: String,
       default: null,
     },
+    dateSecondBreakStart: {
+      type: String,
+      default: null,
+    },
+    dateSecondBreakEnd: {
+      type: String,
+      default: null,
+    },
     breakStart: {
       type: String,
       default: null,
@@ -40,7 +48,39 @@ const employeeTimeSchema = mongoose.Schema(
       type: String,
       default: null,
     },
+    secondBreakStart: {
+      type: String,
+      default: null,
+    },
+    SecondBreakEnd: {
+      type: String,
+      default: null,
+    },
     totalBreakTime: {
+      type: String,
+      default: null,
+    },
+    totalSecondBreakTime: {
+      type: String,
+      default: null,
+    },
+    lunchStart: {
+      type: String,
+      default: null,
+    },
+    lunchEnd: {
+      type: String,
+      default: null,
+    },
+    totalLunchTime: {
+      type: String,
+      default: null,
+    },
+    dateLunchStart: {
+      type: String,
+      default: null,
+    },
+    dateLunchEnd: {
       type: String,
       default: null,
     },

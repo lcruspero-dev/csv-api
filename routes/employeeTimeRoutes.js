@@ -11,6 +11,7 @@ const {
   getEmployeeTimeByEmployeeId,
   searchByNameAndDate,
   updateEmployeeTimeBreak,
+  updateEmployeeTimelunch,
 } = require("../controllers/employeeTimeController");
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
 
@@ -35,5 +36,7 @@ router
   .put(protect, createEmployeeTimeOut)
   .patch(protect, verifyAdmin, updateEmployeeTime)
   .delete(protect, verifyAdmin, deleteEmployeeTime);
+
+router.route("/lunch/update").put(protect, updateEmployeeTimelunch);
 
 module.exports = router;

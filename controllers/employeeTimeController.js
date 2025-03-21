@@ -70,6 +70,11 @@ const updateEmployeeTime = async (req, res) => {
       totalBreakTime,
       dateBreakStart,
       dateBreakEnd,
+      lunchStart,
+      lunchEnd,
+      totalLunchTime,
+      dateLunchStart,
+      dateLunchEnd,
     } = req.body;
 
     // Validate secret key from environment variable
@@ -94,6 +99,11 @@ const updateEmployeeTime = async (req, res) => {
     employeeTime.totalBreakTime = totalBreakTime;
     employeeTime.dateBreakStart = dateBreakStart;
     employeeTime.dateBreakEnd = dateBreakEnd;
+    employeeTime.lunchStart = lunchStart;
+    employeeTime.lunchEnd = lunchEnd;
+    employeeTime.totalLunchTime = totalLunchTime;
+    employeeTime.dateLunchStart = dateLunchStart;
+    employeeTime.dateLunchEnd = dateLunchEnd;
 
     const updatedEmployeeTime = await employeeTime.save();
     res.status(200).json(updatedEmployeeTime);
@@ -237,30 +247,58 @@ const searchByNameAndDate = async (req, res) => {
 };
 const updateEmployeeTimeBreak = async (req, res) => {
   try {
-    // Destructure all possible values from the request body
-    const {
-      breakStart,
-      breakEnd,
-      totalBreakTime,
-      dateBreakStart,
-      dateBreakEnd,
-    } = req.body;
-
-    // Build the update object dynamically based on what is provided
-    const updateFields = {};
-    if (breakStart) updateFields.breakStart = breakStart;
-    if (breakEnd) updateFields.breakEnd = breakEnd;
-    if (totalBreakTime) updateFields.totalBreakTime = totalBreakTime;
-    if (dateBreakStart) updateFields.dateBreakStart = dateBreakStart;
-    if (dateBreakEnd) updateFields.dateBreakEnd = dateBreakEnd;
-
     // Find and update the employee time record
     const employeeTime = await EmployeeTime.findOneAndUpdate(
       {
         employeeId: req.user._id,
         timeOut: null, // Ensure we only update records where timeOut is null
       },
-      updateFields,
+      {
+        breakStart: req.body.breakStart,
+        breakEnd: req.body.breakEnd,
+        totalBreakTime: req.body.totalBreakTime,
+        dateBreakStart: req.body.dateBreakStart,
+        dateBreakEnd: req.body.dateBreakEnd,
+        secondBreakStart: req.body.secondBreakStart,
+        secondBreakEnd: req.body.secondBreakEnd,
+        totalSecondBreakTime: req.body.totalSecondBreakTime,
+        dateSecondBreakStart: req.body.dateSecondBreakStart,
+        dateSecondBreakEnd: req.body.dateSecondBreakEnd,
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (!employeeTime) {
+      return res.status(404).json({
+        message: "No active time record found for the employee",
+      });
+    }
+
+    res.status(200).json(employeeTime);
+  } catch (error) {
+    console.error("Error updating employee time:", error);
+    res.status(500).json({
+      message: "Failed to update employee time record",
+      error: error.message,
+    });
+  }
+};
+
+const updateEmployeeTimelunch = async (req, res) => {
+  try {
+    // Find and update the employee time record
+    const employeeTime = await EmployeeTime.findOneAndUpdate(
+      {
+        employeeId: req.user._id,
+        timeOut: null, // Ensure we only update records where timeOut is null
+      },
+      {
+        lunchStart: req.body.lunchStart,
+        lunchEnd: req.body.lunchEnd,
+        totalLunchTime: req.body.totalLunchTime,
+        dateLunchStart: req.body.dateLunchStart,
+        dateLunchEnd: req.body.dateLunchEnd,
+      },
       { new: true } // Return the updated document
     );
 
@@ -291,4 +329,5 @@ module.exports = {
   getEmployeeTimeWithNullTimeOut,
   searchByNameAndDate,
   updateEmployeeTimeBreak,
+  updateEmployeeTimelunch,
 };
