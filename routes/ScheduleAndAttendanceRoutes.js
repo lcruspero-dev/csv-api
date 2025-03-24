@@ -54,4 +54,10 @@ router.post(
   protect,
   scheduleAndAttendanceController.checkExistingEntry
 );
+
+router.get(
+  "/schedule-per-employee-by-date",
+  protect,
+  scheduleAndAttendanceController.getSchedulePerEmployeeByDate
+);
 module.exports = router;

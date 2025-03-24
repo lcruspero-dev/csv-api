@@ -158,3 +158,30 @@ exports.checkExistingEntry = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.getSchedulePerEmployeeByDate = async (req, res) => {
+  const { date } = req.query; // Read date from query parameters
+  const employeeId = req.user.id; // Get employeeId from authenticated user
+
+  try {
+    const scheduleEntry = await ScheduleEntry.findOne({ employeeId });
+
+    if (!scheduleEntry) {
+      return res.status(404).json({ message: "Schedule entry not found" });
+    }
+
+    const schedule = scheduleEntry.schedule.find(
+      (entry) => entry.date === date
+    );
+
+    if (!schedule) {
+      return res
+        .status(404)
+        .json({ message: "Schedule for the specified date not found" });
+    }
+
+    res.status(200).json({ shiftType: schedule.shiftType });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
