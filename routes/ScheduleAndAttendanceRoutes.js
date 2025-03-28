@@ -60,4 +60,10 @@ router.get(
   protect,
   scheduleAndAttendanceController.getSchedulePerEmployeeByDate
 );
+
+router.get(
+  "/schedule/employee",
+  protect,
+  scheduleAndAttendanceController.getSchedulePerEmployee
+);
 module.exports = router;

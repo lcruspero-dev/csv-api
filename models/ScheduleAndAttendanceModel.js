@@ -23,6 +23,15 @@ const scheduleEntrySchema = new mongoose.Schema({
       endTime: {
         type: String,
       },
+      break1: {
+        type: String,
+      },
+      break2: {
+        type: String,
+      },
+      lunch: {
+        type: String,
+      },
     },
   ],
   teamLeader: {
@@ -44,13 +53,18 @@ const attendanceEntrySchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["present", "absent", "late", "holiday", "pending"],
     required: true,
   },
-  checkinTime: {
+  logIn: {
     type: String,
   },
-  checkoutTime: {
+  logOut: {
+    type: String,
+  },
+  ot: {
+    type: String,
+  },
+  rdot: {
     type: String,
   },
 });

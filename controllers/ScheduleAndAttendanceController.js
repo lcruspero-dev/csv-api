@@ -53,12 +53,33 @@ exports.updateScheduleEntry = async (req, res) => {
       (entry) => entry.date === date
     );
 
+    // Determine if we should clear startTime and endTime
+    const shouldClearTimes = [
+      "restday",
+      "paidTimeOff",
+      "plannedLeave",
+    ].includes(shiftType);
+
     if (existingSchedule) {
-      // Update the shiftType for the existing date
+      // Update the existing entry
       existingSchedule.shiftType = shiftType;
+      if (shouldClearTimes) {
+        existingSchedule.startTime = "";
+        existingSchedule.endTime = "";
+      } else {
+        // Only update times if they're provided and not for special shift types
+        if (startTime !== undefined) existingSchedule.startTime = startTime;
+        if (endTime !== undefined) existingSchedule.endTime = endTime;
+      }
     } else {
-      // Add new date and shiftType to the schedule array
-      scheduleEntry.schedule.push({ date, shiftType, startTime, endTime });
+      // Create new entry
+      const newEntry = {
+        date,
+        shiftType,
+        startTime: shouldClearTimes ? "" : startTime,
+        endTime: shouldClearTimes ? "" : endTime,
+      };
+      scheduleEntry.schedule.push(newEntry);
     }
 
     // Save the updated document
@@ -84,17 +105,29 @@ exports.getAttendanceEntries = async (req, res) => {
 
 // Create a new attendance entry
 exports.createAttendanceEntry = async (req, res) => {
-  const { employeeId, date, status, checkinTime, checkoutTime } = req.body;
   try {
-    const newAttendanceEntry = new AttendanceEntry({
-      employeeId,
-      date,
-      status,
-      checkinTime,
-      checkoutTime,
+    const { date, employeeId } = req.body; // Assuming your request body contains these fields
+
+    // Check if an entry already exists for this date and employee
+    const existingEntry = await AttendanceEntry.findOne({
+      date: date,
+      employeeId: employeeId, // or whatever field identifies the employee
     });
-    await newAttendanceEntry.save();
-    res.status(201).json(newAttendanceEntry);
+
+    if (existingEntry) {
+      // If entry exists, update it with the new data
+      const updatedEntry = await AttendanceEntry.findByIdAndUpdate(
+        existingEntry._id,
+        { ...req.body },
+        { new: true } // Return the updated document
+      );
+      return res.status(200).json(updatedEntry);
+    } else {
+      // If no entry exists, create a new one
+      const newAttendanceEntry = new AttendanceEntry({ ...req.body });
+      await newAttendanceEntry.save();
+      return res.status(201).json(newAttendanceEntry);
+    }
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -181,6 +214,30 @@ exports.getSchedulePerEmployeeByDate = async (req, res) => {
     }
 
     res.status(200).json({ shiftType: schedule.shiftType });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getSchedulePerEmployee = async (req, res) => {
+  const employeeId = req.user.id; // Get employeeId from authenticated user
+
+  try {
+    const scheduleEntry = await ScheduleEntry.findOne({ employeeId });
+
+    if (!scheduleEntry) {
+      return res.status(404).json({ message: "Schedule entry not found" });
+    }
+
+    // Return the schedule data along with employeeName, teamLeader, and position
+    const response = {
+      employeeName: scheduleEntry.employeeName,
+      teamLeader: scheduleEntry.teamLeader,
+      position: scheduleEntry.position,
+      schedule: scheduleEntry.schedule,
+    };
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
