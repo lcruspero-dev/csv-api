@@ -40,7 +40,8 @@ exports.createScheduleEntry = async (req, res) => {
 // Update a schedule entry
 exports.updateScheduleEntry = async (req, res) => {
   const { id } = req.params;
-  const { date, shiftType, startTime, endTime } = req.body;
+  const { date, shiftType, startTime, endTime, break1, break2, lunch } =
+    req.body;
 
   try {
     const scheduleEntry = await ScheduleEntry.findOne({ employeeId: id });
@@ -66,10 +67,16 @@ exports.updateScheduleEntry = async (req, res) => {
       if (shouldClearTimes) {
         existingSchedule.startTime = "";
         existingSchedule.endTime = "";
+        existingSchedule.break1 = "";
+        existingSchedule.break2 = "";
+        existingSchedule.lunch = "";
       } else {
         // Only update times if they're provided and not for special shift types
         if (startTime !== undefined) existingSchedule.startTime = startTime;
         if (endTime !== undefined) existingSchedule.endTime = endTime;
+        if (break1 !== undefined) existingSchedule.break1 = break1;
+        if (break2 !== undefined) existingSchedule.break2 = break2;
+        if (lunch !== undefined) existingSchedule.lunch = lunch;
       }
     } else {
       // Create new entry
@@ -78,6 +85,9 @@ exports.updateScheduleEntry = async (req, res) => {
         shiftType,
         startTime: shouldClearTimes ? "" : startTime,
         endTime: shouldClearTimes ? "" : endTime,
+        break1: shouldClearTimes ? "" : break1,
+        break2: shouldClearTimes ? "" : break2,
+        lunch: shouldClearTimes ? "" : lunch,
       };
       scheduleEntry.schedule.push(newEntry);
     }

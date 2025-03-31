@@ -87,10 +87,23 @@ const getUserProfileById = async (req, res) => {
   }
 };
 
+const getAllUserAvatar = async (req, res) => {
+  try {
+    const userProfiles = await UserProfile.find(
+      {},
+      { userId: 1, avatar: 1, _id: 0 }
+    ); // Explicitly include only userId & avatar, exclude _id
+    res.status(200).json(userProfiles);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user avatars", error });
+  }
+};
+
 module.exports = {
   createUserProfile,
   getUserProfile,
   updateUserProfile,
   deleteUserProfile,
   getUserProfileById,
+  getAllUserAvatar,
 };
