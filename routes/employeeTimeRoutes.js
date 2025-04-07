@@ -12,6 +12,7 @@ const {
   searchByNameAndDate,
   updateEmployeeTimeBreak,
   updateEmployeeTimelunch,
+  getEmployeeTimeByEmployeeIdandDate,
 } = require("../controllers/employeeTimeController");
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
 
@@ -38,5 +39,7 @@ router
   .delete(protect, verifyAdmin, deleteEmployeeTime);
 
 router.route("/lunch/update").put(protect, updateEmployeeTimelunch);
+
+router.route("/search/:id").get(protect, getEmployeeTimeByEmployeeIdandDate);
 
 module.exports = router;

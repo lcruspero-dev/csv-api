@@ -1,5 +1,6 @@
 const e = require("express");
 const EmployeeTime = require("../models/employeeTimeModel");
+const mongoose = require("mongoose");
 
 const getEmployeeTimes = async (_req, res) => {
   try {
@@ -318,6 +319,25 @@ const updateEmployeeTimelunch = async (req, res) => {
   }
 };
 
+const getEmployeeTimeByEmployeeIdandDate = async (req, res) => {
+  try {
+    const { date } = req.query;
+    const employeeTime = await EmployeeTime.findOne({
+      employeeId: new mongoose.Types.ObjectId(req.params.id),
+      date,
+    });
+
+    if (!employeeTime) {
+      return res.status(404).json({ message: "Employee time not found" });
+    }
+
+    res.status(200).json(employeeTime);
+  } catch (error) {
+    console.error("Error fetching employee time:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getEmployeeTimes,
   createEmployeeTimeIn,
@@ -330,4 +350,5 @@ module.exports = {
   searchByNameAndDate,
   updateEmployeeTimeBreak,
   updateEmployeeTimelunch,
+  getEmployeeTimeByEmployeeIdandDate,
 };

@@ -61,6 +61,12 @@ const attendanceEntrySchema = new mongoose.Schema({
   logOut: {
     type: String,
   },
+  totalHours: {
+    type: String,
+  },
+  shift: {
+    type: String,
+  },
   ot: {
     type: String,
   },
