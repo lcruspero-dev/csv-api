@@ -170,7 +170,7 @@ const deleteNte = asyncHandler(async (req, res) => {
 //get nte by status query param
 const getNtesByStatus = asyncHandler(async (req, res) => {
   const status = req.params.status;
-  const ntes = await Nte.find({ status });
+  const ntes = await Nte.find({ status }).sort({ createdAt: -1 }); // newest first
   res.status(200).json(ntes);
 });
 
