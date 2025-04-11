@@ -8,6 +8,14 @@ const {
 exports.getScheduleEntries = async (req, res) => {
   try {
     const scheduleEntries = await ScheduleEntry.find().populate("employeeId");
+
+    // Sort by employeeName alphabetically (case-insensitive)
+    scheduleEntries.sort((a, b) => {
+      const nameA = a.employeeName.toLowerCase();
+      const nameB = b.employeeName.toLowerCase();
+      return nameA.localeCompare(nameB);
+    });
+
     res.status(200).json(scheduleEntries);
   } catch (error) {
     res.status(500).json({ message: error.message });
