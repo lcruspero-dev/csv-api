@@ -214,16 +214,16 @@ const searchByNameAndDate = async (req, res) => {
         // No additional filters needed
         break;
       case "csv-shift1":
-        query.shift = "Shift1";
+        query.shift = "shift1";
         break;
       case "csv-shift2":
-        query.shift = "Shift2";
+        query.shift = "shift2";
         break;
       case "csv-shift3":
-        query.shift = "Shift3";
+        query.shift = "shift3";
         break;
       case "csv-staff":
-        query.shift = "Staff";
+        query.shift = "staff";
         break;
       default:
         // Create a case-insensitive regex for partial name matching
