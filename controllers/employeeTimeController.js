@@ -214,13 +214,13 @@ const searchByNameAndDate = async (req, res) => {
         // No additional filters needed
         break;
       case "csv-shift1":
-        query.shift = "Shift 1";
+        query.shift = "Shift1";
         break;
       case "csv-shift2":
-        query.shift = "Shift 2";
+        query.shift = "Shift2";
         break;
       case "csv-shift3":
-        query.shift = "Shift 3";
+        query.shift = "Shift3";
         break;
       case "csv-staff":
         query.shift = "Staff";
