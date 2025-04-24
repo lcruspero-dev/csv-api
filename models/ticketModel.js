@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
+const Counter = require("./counterModel");
 
 const ticketSchema = mongoose.Schema(
   {
+    ticketNumber: {
+      type: String,
+      unique: true,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -55,5 +60,39 @@ const ticketSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+ticketSchema.pre("save", async function (next) {
+  if (!this.ticketNumber) {
+    try {
+      // Define category to prefix mapping
+      const incCategories = [
+        "MFA related concern",
+        "Account recovery",
+        "Spam / Phishing email",
+        "Network & Connectivity",
+      ];
+
+      let prefix = "RITM"; // Default prefix
+
+      if (incCategories.includes(this.category)) {
+        prefix = "INC";
+      } else if (this.category === "Change Management") {
+        prefix = "CHG";
+      }
+
+      // Get or create counter for this prefix
+      const counter = await Counter.findByIdAndUpdate(
+        { _id: prefix },
+        { $inc: { seq: 1 } },
+        { new: true, upsert: true }
+      );
+
+      this.ticketNumber = `${prefix}-${String(counter.seq).padStart(4, "0")}`;
+    } catch (err) {
+      return next(err);
+    }
+  }
+  next();
+});
 
 module.exports = mongoose.model("ticket", ticketSchema);
