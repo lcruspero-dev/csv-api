@@ -30,6 +30,10 @@ const userSchema = mongoose.Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
+    leaveCredits: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
