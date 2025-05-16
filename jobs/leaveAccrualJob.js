@@ -122,9 +122,9 @@ const runLeaveAccrual = async () => {
   }
 };
 
-// Schedule the job to run at 3 AM PHT (19:00 UTC)
-cron.schedule("0 3 * * *", () => runLeaveAccrual(), {
-  timezone: "Asia/Manila",
+// 3 AM PHT = 19:00 UTC (previous day)
+cron.schedule("0 19 * * *", () => runLeaveAccrual(), {
+  timezone: "UTC",
 });
 
 console.log("Leave accrual job scheduled to run daily at 3 AM PHT");

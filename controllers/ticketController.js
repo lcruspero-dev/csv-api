@@ -141,7 +141,9 @@ const updateTicket = asyncHandler(async (req, res) => {
   // Validate status if provided
   if (
     req.body.status &&
-    !["open", "closed", "In Progress"].includes(req.body.status)
+    !["open", "closed", "In Progress", "Approved", "Rejected"].includes(
+      req.body.status
+    )
   ) {
     res.status(400);
     throw new Error("Invalid status value");
