@@ -238,28 +238,6 @@ const changePassword = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Password changed successfully" });
 });
 
-const updateleaveCredits = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
-  const { leaveCredits } = req.body;
-
-  // Validate that leaveCredits is a number
-  if (typeof leaveCredits !== "number") {
-    res.status(400);
-    throw new Error("Invalid leaveCredits. It must be a number.");
-  }
-
-  const user = await User.findById(userId);
-  if (!user) {
-    res.status(404);
-    throw new Error("User not found");
-  }
-
-  user.leaveCredits = leaveCredits;
-  await user.save();
-
-  res.status(200).json({ message: "Leave credits updated successfully" });
-});
-
 module.exports = {
   registerUser,
   loginUser,
@@ -270,5 +248,4 @@ module.exports = {
   setUserToInactive,
   setUserToActive,
   changePassword,
-  updateleaveCredits,
 };

@@ -10,7 +10,6 @@ const {
   setUserToInactive,
   setUserToActive,
   changePassword,
-  updateleaveCredits,
 } = require("../controllers/userController");
 
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
@@ -33,7 +32,5 @@ router.put("/inactive/:userId", protect, verifyAdmin, setUserToInactive);
 router.put("/active/:userId", protect, verifyAdmin, setUserToActive);
 
 router.put("/change-password", protect, changePassword);
-
-router.put("/update/leave-credits", protect, updateleaveCredits);
 
 module.exports = router;

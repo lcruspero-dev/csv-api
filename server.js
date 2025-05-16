@@ -10,6 +10,7 @@ const cors = require("cors");
 // Connect to database
 connectDB();
 
+require("./jobs/leaveAccrualJob.js");
 const app = express();
 
 /**
@@ -57,6 +58,7 @@ app.use(
 app.use("/api/surveys", require("./routes/surveyRoutes"));
 app.use("/api/ntes", require("./routes/nteRoutes"));
 app.use("/api/userProfiles", require("./routes/userProfileRoutes"));
+app.use("/api/leave", require("./routes/leaveRoutes"));
 
 // Serve frontend time
 
