@@ -52,8 +52,15 @@ const getTicket = asyncHandler(async (req, res) => {
 // @route   POST /api/tickets
 // @access  Private
 const createTicket = asyncHandler(async (req, res) => {
-  const { category, description, priority, department, assignedTo, file } =
-    req.body;
+  const {
+    category,
+    description,
+    priority,
+    department,
+    assignedTo,
+    file,
+    leaveDays,
+  } = req.body;
 
   // Validation (unchanged)
   if (!category || !description || !department) {
@@ -91,6 +98,7 @@ const createTicket = asyncHandler(async (req, res) => {
     assignedTo: assignedTo || "Not Assigned",
     file,
     department,
+    leaveDays,
   });
 
   await ticket.save();

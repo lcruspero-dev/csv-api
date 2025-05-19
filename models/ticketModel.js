@@ -25,6 +25,9 @@ const ticketSchema = mongoose.Schema(
       type: String,
       required: [true, "Please enter a decription of the issue"],
     },
+    leaveDays: {
+      type: Number,
+    },
     status: {
       type: String,
       required: true,

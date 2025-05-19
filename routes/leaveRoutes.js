@@ -3,6 +3,7 @@ const express = require("express");
 const { zonedTimeToUtc, utcToZonedTime, format } = require("date-fns-tz");
 const { addMonths, lastDayOfMonth } = require("date-fns");
 const EmployeeLeave = require("../models/EmployeeLeave");
+const { protect, verifyAdmin } = require("../middleware/authMiddleware");
 
 const PH_TIMEZONE = "Asia/Manila";
 const router = express.Router();
@@ -43,6 +44,27 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/my/leave-credits", protect, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const employeeLeave = await EmployeeLeave.findOne({
+      employeeId: userId,
+    });
+
+    if (!employeeLeave) {
+      return res
+        .status(404)
+        .json({ message: "Leave record not found for this user" });
+    }
+
+    res.json(employeeLeave);
+  } catch (error) {
+    console.error("Error fetching leave credits:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // Create new employee leave record with PHT dates (now in MM/DD/YYYY format)
 router.post("/", async (req, res) => {
   try {
@@ -69,16 +91,8 @@ router.post("/", async (req, res) => {
       accrualRate,
       lastAccrualDate: startDateUTC,
       nextAccrualDate: nextAccrualUTC,
-      // cycleDays: 0, // Now using monthly cycle (same day)
       timezone: PH_TIMEZONE,
-      history: [
-        {
-          date: new Date(),
-          action: "initial setup",
-          amount: 0,
-          description: "Leave account created",
-        },
-      ],
+      //
     });
 
     await employeeLeave.save();
