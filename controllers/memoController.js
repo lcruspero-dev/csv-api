@@ -10,10 +10,19 @@ const getMemos = asyncHandler(async (_req, res) => {
 
     let memos;
     if (user.isAdmin) {
-      memos = await Memo.find().sort({ createdAt: -1 });
+      memos = await Memo.find().sort({ createdAt: -1 }); // Admins see all memos
     } else {
       memos = await Memo.find({
-        createdAt: { $gte: user.createdAt },
+        $or: [
+          { isPinned: true }, // Always include pinned memos
+          {
+            $or: [
+              { isPinned: false }, // Explicitly unpinned
+              { isPinned: { $exists: false } }, // Or field doesn't exist
+            ],
+            createdAt: { $gte: user.createdAt }, // Only newer memos
+          },
+        ],
       }).sort({ createdAt: -1 });
     }
 

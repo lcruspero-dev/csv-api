@@ -27,6 +27,10 @@ const memoSchema = mongoose.Schema(
         },
       },
     ],
+    isPinned: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
