@@ -16,9 +16,10 @@ const EmployeeLeaveSchema = new mongoose.Schema(
     history: [
       {
         date: Date,
-        action: String,
-        amount: Number,
         description: String,
+        days: Number,
+        ticket: String,
+        status: String,
       },
     ],
   },

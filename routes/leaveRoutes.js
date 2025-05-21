@@ -29,7 +29,7 @@ const getSameDayNextMonth = (date) => {
 };
 
 // Get all employee leave records with PHT dates (now in MM/DD/YYYY format)
-router.get("/", async (req, res) => {
+router.get("/", protect, verifyAdmin, async (req, res) => {
   try {
     const employees = await EmployeeLeave.find();
     const formattedEmployees = employees.map((emp) => ({
@@ -104,6 +104,60 @@ router.post("/", async (req, res) => {
     });
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+});
+
+//update employee leave
+router.put("/:id", async (req, res) => {
+  try {
+    const leaveId = req.params.id;
+    const updateData = req.body;
+
+    // Validate the incoming data
+    if (!leaveId || !updateData) {
+      return res.status(400).json({ message: "Missing required parameters" });
+    }
+
+    // If currentBalance is being updated, ensure it's a valid number
+    if (updateData.currentBalance !== undefined) {
+      const balance = parseFloat(updateData.currentBalance);
+      if (isNaN(balance)) {
+        return res.status(400).json({ message: "Invalid balance value" });
+      }
+      // Ensure balance doesn't go negative
+      updateData.currentBalance = Math.max(0, balance);
+    }
+
+    const updatedLeave = await EmployeeLeave.findByIdAndUpdate(
+      leaveId,
+      updateData,
+      {
+        new: true, // Return the updated document
+        runValidators: true, // Ensure updates follow schema validation
+      }
+    );
+
+    if (!updatedLeave) {
+      return res.status(404).json({ message: "Leave credit record not found" });
+    }
+
+    // Log the update for audit purposes
+    console.log(
+      `Leave credit updated for ${updatedLeave.employeeId}: New balance ${updatedLeave.currentBalance}`
+    );
+
+    res.json({
+      success: true,
+      data: updatedLeave,
+      message: "Leave credit updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating leave credit:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating leave credit",
+      error: error.message,
+    });
   }
 });
 
