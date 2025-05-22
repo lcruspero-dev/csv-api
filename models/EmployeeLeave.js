@@ -11,7 +11,7 @@ const EmployeeLeaveSchema = new mongoose.Schema(
     accrualRate: { type: Number, default: 1.5 },
     lastAccrualDate: { type: Date, required: true }, // Stored as UTC but represents PHT
     nextAccrualDate: { type: Date, required: true }, // Stored as UTC but represents PHT
-    // cycleDays: { type: Number, default: 30 },
+    isActive: { type: Boolean, default: true },
     timezone: { type: String, default: "Asia/Manila" },
     history: [
       {

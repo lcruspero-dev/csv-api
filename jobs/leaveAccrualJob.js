@@ -47,11 +47,12 @@ const runLeaveAccrual = async () => {
     const todayPHT = getTodayPHT();
     const endOfDayPHT = new Date(todayPHT.setHours(23, 59, 59, 999));
 
-    // Find employees due for accrual (comparing PHT dates)
+    // Find active employees due for accrual (comparing PHT dates)
     const employees = await EmployeeLeave.find({
       nextAccrualDate: {
         $lte: zonedTimeToUtc(endOfDayPHT, PH_TIMEZONE),
       },
+      isActive: true, // Only include active employees
     });
 
     let updatedCount = 0;
@@ -100,7 +101,7 @@ const runLeaveAccrual = async () => {
     };
 
     console.log(
-      `Leave accrual job completed. Found ${employees.length} employees, updated ${updatedCount}.`
+      `Leave accrual job completed. Found ${employees.length} active employees, updated ${updatedCount}.`
     );
 
     return result;

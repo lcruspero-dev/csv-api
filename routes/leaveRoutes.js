@@ -31,13 +31,17 @@ const getSameDayNextMonth = (date) => {
 // Get all employee leave records with PHT dates (now in MM/DD/YYYY format)
 router.get("/", protect, verifyAdmin, async (req, res) => {
   try {
-    const employees = await EmployeeLeave.find();
+    const employees = await EmployeeLeave.find({
+      isActive: { $ne: false },
+    }).sort({ currentBalance: -1 });
+
     const formattedEmployees = employees.map((emp) => ({
       ...emp.toObject(),
       startDate: formatForDisplay(emp.startDate),
       lastAccrualDate: formatForDisplay(emp.lastAccrualDate),
       nextAccrualDate: formatForDisplay(emp.nextAccrualDate),
     }));
+
     res.json(formattedEmployees);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -91,6 +95,7 @@ router.post("/", async (req, res) => {
       accrualRate,
       lastAccrualDate: startDateUTC,
       nextAccrualDate: nextAccrualUTC,
+      isActive: true,
       timezone: PH_TIMEZONE,
       //
     });
