@@ -66,14 +66,14 @@ const runLeaveAccrual = async () => {
           currentBalance: accrualResult.currentBalance,
           lastAccrualDate: accrualResult.lastAccrualDate,
           nextAccrualDate: accrualResult.nextAccrualDate,
-          $push: {
-            history: accrualResult.historyEntry || {
-              date: new Date(),
-              action: "monthly accrual",
-              amount: accrualResult.accruedDays,
-              description: `Automatic accrual after ${accrualResult.months} month(s)`,
-            },
-          },
+          // $push: {
+          //   history: accrualResult.historyEntry || {
+          //     date: new Date(),
+          //     action: "monthly accrual",
+          //     amount: accrualResult.accruedDays,
+          //     description: `Automatic accrual after ${accrualResult.months} month(s)`,
+          //   },
+          // },
         };
 
         updates.push({
