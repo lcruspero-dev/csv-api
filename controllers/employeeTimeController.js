@@ -14,20 +14,27 @@ const getEmployeeTimes = async (_req, res) => {
 
 const createEmployeeTimeIn = async (req, res) => {
   try {
-    // Check for existing record
-    const existingRecord = await EmployeeTime.findOne({
+    // Count existing records for this employee, date, and shift
+    const existingRecordsCount = await EmployeeTime.countDocuments({
       employeeId: req.user._id,
       date: req.body.date,
       shift: req.body.shift,
     });
 
-    if (existingRecord) {
+    // If loginLimit is 1, allow only one record
+    if (req.body.loginLimit === 1 && existingRecordsCount >= 1) {
       return res.status(409).json({
         message: "Duplicate entry: Time-in already recorded for this date.",
       });
     }
+    // If loginLimit is 2, allow up to two records
+    else if (req.body.loginLimit === 2 && existingRecordsCount >= 2) {
+      return res.status(409).json({
+        message: "Maximum 2 time-ins allowed for this date and shift.",
+      });
+    }
 
-    // Create new record if no duplicate is found
+    // Create new record if within limits
     const newEmployeeTime = await EmployeeTime.create({
       employeeId: req.user._id,
       employeeName: req.user.name,
