@@ -10,6 +10,7 @@ const {
   setUserToInactive,
   setUserToActive,
   changePassword,
+  updateLoginLimit,
 } = require("../controllers/userController");
 
 const { protect, verifyAdmin } = require("../middleware/authMiddleware");
@@ -32,5 +33,7 @@ router.put("/inactive/:userId", protect, verifyAdmin, setUserToInactive);
 router.put("/active/:userId", protect, verifyAdmin, setUserToActive);
 
 router.put("/change-password", protect, changePassword);
+
+router.put("/update-login-limit/:userId", protect, verifyAdmin, updateLoginLimit);
 
 module.exports = router;

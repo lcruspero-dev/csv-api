@@ -46,6 +46,7 @@ const registerUser = asyncHandler(async (req, res) => {
       isAdmin: user.isAdmin,
       role: user.role,
       token: generateToken(user._id, user.isAdmin, user.name),
+      loginLimit: user.loginLimit,
     });
   } else {
     res.status(400);
@@ -70,6 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
       isAdmin: user.isAdmin,
       role: user.role,
       status: user.status,
+      loginLimit: user.loginLimit,
       token: generateToken(user._id, user.isAdmin, user.name),
     });
   } else {
@@ -238,6 +240,22 @@ const changePassword = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Password changed successfully" });
 });
 
+//update login limit
+const updateLoginLimit = asyncHandler(async (req, res) => {
+  const { userId } = req.params; // Destructure userId from params
+  const { loginLimit } = req.body;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  await User.findByIdAndUpdate(userId, { loginLimit });
+
+  res.status(200).json({ message: "Login limit updated successfully" });
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -248,4 +266,5 @@ module.exports = {
   setUserToInactive,
   setUserToActive,
   changePassword,
+  updateLoginLimit,
 };

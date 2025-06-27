@@ -30,6 +30,10 @@ const userSchema = mongoose.Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
+    loginLimit: {
+      type: Number,
+      default: 1,
+    },
   },
   {
     timestamps: true,
