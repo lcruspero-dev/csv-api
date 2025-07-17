@@ -73,6 +73,81 @@ const userProfileSchema = mongoose.Schema(
     avatar: {
       type: String,
     },
+    taxStatus: {
+      type: String,
+    },
+    department: {
+      type: String,
+    },
+    jobPosition: {
+      type: String,
+    },
+    employmentStatus: {
+      type: String,
+    },
+    dateHired: {
+      type: String,
+    },
+    probationaryDate: {
+      type: String,
+    },
+    regularizationDate: {
+      type: String,
+    },
+    hmoAccountNumber: {
+      type: Number,
+    },
+    bankAccountNumber: {
+      type: Number,
+    },
+    mobileNumber: {
+      type: Number,
+    },
+    emailAddress: {
+      type: String,
+    },
+    phoneAddress: {
+      type: String,
+    },
+    presentHouseNo: {
+      type: String,
+    },
+    presentStreet: {
+      type: String,
+    },
+    presentBarangay: {
+      type: String,
+    },
+    presentTown: {
+      type: String,
+    },
+    presentCity: {
+      type: String,
+    },
+    presentProvince: {
+      type: String,
+    },
+    presentProvince: {
+      type: String,
+    },
+    homeHouseNo: {
+      type: String,
+    },
+    homeStreet: {
+      type: String,
+    },
+    homeBarangay: {
+      type: String,
+    },
+    homeTown: {
+      type: String,
+    },
+    homeCity: {
+      type: String,
+    },
+    homeProvince: {
+      type: String,
+    },
   },
   {
     timestamps: true,
