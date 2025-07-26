@@ -39,7 +39,7 @@ const surveySchema = new Schema({
         default: false,
       },
       feedback: {
-        type: String, // Fixed: 'string' to 'String'
+        type: String,
       },
       ratingAnswer: {
         type: Number,
