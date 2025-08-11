@@ -8,7 +8,7 @@ const {
 exports.getScheduleEntries = async (req, res) => {
   try {
     const scheduleEntries = await ScheduleEntry.find({
-      teamLeader: { $ne: "inactive" }, // Exclude entries where teamLeader is "inactive"
+      teamLeader: { $ne: "Inactive" }, // Exclude entries where teamLeader is "inactive"
     }).populate("employeeId");
 
     // Sort by employeeName alphabetically (case-insensitive)
@@ -119,12 +119,10 @@ exports.updateTeamLeaderToInactive = async (req, res) => {
       return res.status(404).json({ message: "Schedule entry not found" });
     }
 
-    scheduleEntry.teamLeader = "inactive";
+    scheduleEntry.teamLeader = "Inactive";
     await scheduleEntry.save();
 
-    res
-      .status(200)
-      .json({ message: "Team leader set to inactive", scheduleEntry });
+    res.status(200).json({ message: "User set to Inactive", scheduleEntry });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
