@@ -7,7 +7,9 @@ const {
 // Get all schedule entries
 exports.getScheduleEntries = async (req, res) => {
   try {
-    const scheduleEntries = await ScheduleEntry.find().populate("employeeId");
+    const scheduleEntries = await ScheduleEntry.find({
+      teamLeader: { $ne: "inactive" }, // Exclude entries where teamLeader is "inactive"
+    }).populate("employeeId");
 
     // Sort by employeeName alphabetically (case-insensitive)
     scheduleEntries.sort((a, b) => {
@@ -106,6 +108,25 @@ exports.updateScheduleEntry = async (req, res) => {
     res.status(200).json(scheduleEntry);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+// this will remove the employee from the list
+exports.updateTeamLeaderToInactive = async (req, res) => {
+  try {
+    const scheduleEntry = await ScheduleEntry.findById(req.params.id);
+    if (!scheduleEntry) {
+      return res.status(404).json({ message: "Schedule entry not found" });
+    }
+
+    scheduleEntry.teamLeader = "inactive";
+    await scheduleEntry.save();
+
+    res
+      .status(200)
+      .json({ message: "Team leader set to inactive", scheduleEntry });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
