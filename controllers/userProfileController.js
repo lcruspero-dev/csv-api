@@ -99,6 +99,25 @@ const getAllUserAvatar = async (req, res) => {
   }
 };
 
+const adminUpdateUserProfile = async (req, res) => {
+  try {
+    const updatedProfile = await UserProfile.findOneAndUpdate(
+      { userId: req.params.id },
+      { $set: req.body },
+      {
+        new: true,
+        runValidators: true,
+        upsert: true, // This creates the document if it doesn't exist
+        setDefaultsOnInsert: true, // This applies schema defaults if creating new
+      }
+    );
+
+    res.status(200).json(updatedProfile);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating user profile", error });
+  }
+};
+
 module.exports = {
   createUserProfile,
   getUserProfile,
@@ -106,4 +125,5 @@ module.exports = {
   deleteUserProfile,
   getUserProfileById,
   getAllUserAvatar,
+  adminUpdateUserProfile,
 };
