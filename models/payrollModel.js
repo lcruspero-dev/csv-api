@@ -4,10 +4,7 @@ const mongoose = require("mongoose");
 const earningsSchema = new mongoose.Schema({
     basicPay: {
         type: Number,
-        required: [
-            true,
-            "Basic Pay required"
-        ]
+        required: [true, "Basic Pay required"]
     },
     lateUndertime: Number,
     regOT: Number,
@@ -69,7 +66,7 @@ const payrollSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
-        employeeID: {
+        employeeId: {   // 🔥 fixed name
             type: String,
             required: [true, "Employee ID is required"],
         },
@@ -96,7 +93,5 @@ const payrollSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-// Create model
 const Payroll = mongoose.model("Payroll", payrollSchema);
-
 module.exports = Payroll;

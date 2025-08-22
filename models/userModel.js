@@ -8,7 +8,7 @@ const userSchema = mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, "Please add a email"],
+      required: [true, "Please add an email"],
       unique: true,
     },
     password: {
@@ -22,13 +22,7 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: [
-        "user",
-        "HR", "IT",
-        "SUPERADMIN",
-        "TL",
-        "ACCOUNTING"
-      ],
+      enum: ["user", "HR", "IT", "SUPERADMIN", "TL", "ACCOUNTING"],
       default: "user",
     },
     status: {
@@ -39,6 +33,12 @@ const userSchema = mongoose.Schema(
     loginLimit: {
       type: Number,
       default: 1,
+    },
+    // 🔥 add HR Employee ID
+    employeeId: {
+      type: String,
+      required: [true, "Employee ID is required"],
+      unique: true,
     },
   },
   {

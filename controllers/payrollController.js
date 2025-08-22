@@ -1,66 +1,52 @@
-
-const Payroll = require("../models/payrollModel")
-const UserProfile = require("../models/userProfileModel");
+const Payroll = require("../models/payrollModel");
+const User = require("../models/userModel"); // 🔥 fixed
 const mongoose = require("mongoose");
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
+// Fetch all payrolls
 const fetchPayrolls = async (req, res) => {
-
     try {
         const payrolls = await Payroll.find()
             .populate("employee", "name email role status");
-        res.status(200).json({
-            status: "Success",
-            data: payrolls
-        });
+        res.status(200).json({ status: "Success", data: payrolls });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            status: 'Error',
-            message: error.message
-        });
+        res.status(500).json({ status: "Error", message: error.message });
     }
+};
 
-}
-
+// Fetch payrolls for one employee
 const fetchPayroll = async (req, res) => {
     try {
-        const { userId } = req.params;
+        const { id } = req.params;
 
-        if (!isValidObjectId(userId)) {
-            return res.status(404).json({
-                status: 'Error',
-                message: 'Employee not found'
+        if (!isValidObjectId(id)) {
+            return res.status(400).json({
+                status: "Error",
+                message: "Invalid employee ObjectId"
             });
         }
 
-        const payroll = await Payroll.findOne({
-            employee: userId
-        })
+        const payrolls = await Payroll.find({ employee: id })
             .populate("employee", "name email role status");
-        if (!payroll) {
-            return res.status(404).json({ message: "No payroll found for this user" });
+
+        if (!payrolls || payrolls.length === 0) {
+            return res.status(404).json({ message: "No payrolls found for this user" });
         }
 
-        res.status(200).json({
-            status: "Success",
-            data: payroll
-        });
+        res.status(200).json({ status: "Success", data: payrolls });
 
     } catch (error) {
-        res.status(500).json({
-            status: 'Internal Server Error',
-            message: error.message
-        });
+        res.status(500).json({ status: "Internal Server Error", message: error.message });
     }
-}
+};
+
 
 const createPayroll = async (req, res) => {
     try {
-        const { userId } = req.params
         const {
-            employeeId,
+            employee,      // ObjectId of User
+            employeeId,    // optional, can be same as employee
             basicMonthPay,
             dailyRate,
             hourlyRate,
@@ -68,21 +54,20 @@ const createPayroll = async (req, res) => {
             deductions,
             employerContribution,
             netPay
-        } = req.body
-        if (!isValidObjectId(userId)) {
-            return res.status(400).json({ message: "Invalid User ID" });
+        } = req.body;
+
+        if (!isValidObjectId(employee)) {
+            return res.status(400).json({ message: "Invalid Employee ObjectId" });
         }
 
-        //Check if user exists
-        const user = await User.findById(userId);
+        const user = await User.findById(employee);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // 4. Create payroll
         const payroll = new Payroll({
-            employee: userId,
-            employeeId,
+            employee,
+            employeeId: employeeId || employee, // ✅ keep same as user _id if not given
             basicMonthPay,
             dailyRate,
             hourlyRate,
@@ -100,17 +85,13 @@ const createPayroll = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({
-            status: 'Internal Server Error',
-            message: error.message
-        });
+        res.status(500).json({ status: "Internal Server Error", message: error.message });
     }
-}
-
+};
 
 
 module.exports = {
     fetchPayrolls,
     fetchPayroll,
     createPayroll
-}
+};
