@@ -12,6 +12,8 @@ const EmployeeLeaveSchema = new mongoose.Schema(
     lastAccrualDate: { type: Date, required: true }, // Stored as UTC but represents PHT
     nextAccrualDate: { type: Date, required: true }, // Stored as UTC but represents PHT
     isActive: { type: Boolean, default: true },
+    employmentStatus: { type: String, default: "Probationary" },
+    StartingleaveCredit: { type: Number, default: 0 },
     timezone: { type: String, default: "Asia/Manila" },
     history: [
       {
