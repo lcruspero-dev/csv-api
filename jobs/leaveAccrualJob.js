@@ -64,6 +64,7 @@ const runLeaveAccrual = async () => {
       if (accrualResult) {
         const update = {
           currentBalance: accrualResult.currentBalance,
+          startingLeaveCredit: accrualResult.startingLeaveCredit,
           lastAccrualDate: accrualResult.lastAccrualDate,
           nextAccrualDate: accrualResult.nextAccrualDate,
           // $push: {
